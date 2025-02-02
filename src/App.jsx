@@ -19,8 +19,6 @@ function App() {
       <Routes>
         <Route index element={<Home />} />
 
-        <Route path ="auth" element ={<Auth/>}/>
-
         <Route element={<Layout />}>
           <Route path="user" element={<User />} />
           <Route path="expenses" element={<Expenses />} />
