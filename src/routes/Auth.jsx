@@ -1,10 +1,52 @@
 import React, { useState } from "react";
+import apiRequest from "../lib/apiRequest";
+import { useNavigate } from "react-router";
 
 function Auth(props) {
   const [showSignIn, setShowSignIn] = useState(true);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
+
   const hideAuth = () => {
     props.setShowAuth(false);
+  };
+
+  const signIn = async () => {
+    try {
+      const result = await apiRequest.post("/auth/signin", {
+        email,
+        password,
+      });
+
+      console.log(result);
+
+      if (result.status == "200") {
+        navigate("/expense");
+        // UseNotification
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const signUp = async () => {
+    const result = await apiRequest.post("/auth/signup", {
+      username,
+      password,
+      email,
+    });
+
+    if (result.status == "201") {
+      setShowSignIn(true);
+
+      // UseNotification
+    }
+
+    console.log(result);
   };
 
   return (
@@ -44,16 +86,18 @@ function Auth(props) {
           {showSignIn ? (
             <form className="flex flex-col">
               <input
-                name="username"
+                name="email"
                 type="text"
-                placeholder="Username"
+                placeholder="email"
                 className="p-2 border-b-1 border-emerald-200 outline-none"
+                onChange={(e) => setEmail(e.target.value)}
               />
               <input
                 name="password"
                 type="password"
                 placeholder="Password"
                 className="p-2 border-b-1 border-emerald-200 outline-none"
+                onChange={(e) => setPassword(e.target.value)}
               />
 
               {error && <span className="test">{error}</span>}
@@ -65,6 +109,7 @@ function Auth(props) {
                 type="text"
                 placeholder="Username"
                 className="p-2 border-b-1 border-emerald-200 outline-none"
+                onChange={(e) => setUsername(e.target.value)}
               />
 
               <input
@@ -72,12 +117,14 @@ function Auth(props) {
                 type="text"
                 placeholder="Email"
                 className="p-2 border-b-1 border-emerald-200 outline-none"
+                onChange={(e) => setEmail(e.target.value)}
               />
               <input
                 name="password"
                 type="password"
                 placeholder="Password"
                 className="p-2 border-b-1 border-emerald-200 outline-none"
+                onChange={(e) => setPassword(e.target.value)}
               />
               {error && <span className="test">{error}</span>}
             </form>
@@ -85,7 +132,10 @@ function Auth(props) {
         </div>
 
         <div className="flex justify-center">
-          <button className="cursor-pointer py-1 px-2 rounded-full font-semibold text-lg text-white bg-green-400 w-1/4 hover:outline hover:text-green-400 hover:bg-white">
+          <button
+            onClick={showSignIn ? signIn : signUp}
+            className="cursor-pointer py-1 px-2 rounded-full font-semibold text-lg text-white bg-green-400 w-1/4 hover:outline hover:text-green-400 hover:bg-white"
+          >
             {showSignIn ? "Signin" : "Sign up "}
           </button>
         </div>
