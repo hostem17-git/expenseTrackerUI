@@ -54,10 +54,7 @@ export default function Layout() {
                   d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
                 />
               </svg>
-              <NavLink
-                className={(isActive) => `py-2 mx-1 `}
-                to="/creator/MyProfile"
-              >
+              <NavLink className={(isActive) => `py-2 mx-1 `} to="/user">
                 My profile
               </NavLink>
             </li>
@@ -77,7 +74,7 @@ export default function Layout() {
                 />
               </svg>
 
-              <NavLink className={(isActive) => `py-2 mx-1 `} to="/creator">
+              <NavLink className={(isActive) => `py-2 mx-1 `} to="/expenses">
                 Expenses
               </NavLink>
             </li>
@@ -129,7 +126,7 @@ export default function Layout() {
                 />
               </svg>
 
-              <NavLink to="/creator">Expenses</NavLink>
+              <NavLink to="/expenses">Expenses</NavLink>
             </li>
             <li className="flex flex-col items-center justify">
               <svg
@@ -147,7 +144,7 @@ export default function Layout() {
                 />
               </svg>
 
-              <NavLink to="/creator/MyProfile">My profile</NavLink>
+              <NavLink to="/user">My profile</NavLink>
             </li>
           </ul>
         </div>
