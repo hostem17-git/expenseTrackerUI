@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
+import apiRequest from "../lib/apiRequest";
 
 function Expenses() {
   const formatDate = (date) => date.toISOString().split("T")[0];
+
+  const [data, setData] = useState(null);
 
   const currentDate = new Date();
 
@@ -18,7 +21,6 @@ function Expenses() {
   const setRangeToCurrentWeek = () => {
     const today = new Date();
     const dayOfWeek = today.getDay();
-    classname = "outline ";
     const monday = new Date(today);
     monday.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1)); // Adjust for Monday
     setStartDate(formatDate(monday));
@@ -52,8 +54,22 @@ function Expenses() {
   };
 
   useEffect(() => {
+    async function fetchData() {
+      try {
+        const result = await apiRequest.get("/expense", {
+          startDate,
+          endDate,
+          limit: "10000",
+        });
+
+        console.log(result);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchData();
     console.log(startDate);
-  }, [startDate]);
+  }, [startDate, endDate]);
 
   console.log(startDate, endDate);
   return (

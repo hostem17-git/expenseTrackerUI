@@ -25,7 +25,7 @@ function Auth(props) {
       console.log(result);
 
       if (result.status == "200") {
-        navigate("/expense");
+        navigate("/expenses");
         // UseNotification
       }
     } catch (error) {
