@@ -19,7 +19,7 @@ export default function Layout() {
   };
 
   return (
-    <div className="flex flex-col h-svh">
+    <div className="flex flex-col h-svh bg-[url(/homeBG-dark.png)] ">
       <div className="flex justify-between bg-emerald-100 px-2 fixed top-0 left-0 right-0">
         {/* Header */}
         <nav className="flex ">
