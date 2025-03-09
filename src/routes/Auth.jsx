@@ -3,12 +3,14 @@ import apiRequest from "../lib/apiRequest";
 import { useNavigate } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import ButtonGreenGradient from "../components/ButtonGreenGradient";
+import { em } from "framer-motion/client";
 
 function Auth(props) {
   const [showSignIn, setShowSignIn] = useState(true);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [number,setNumber] = useState();
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
@@ -117,6 +119,7 @@ function Auth(props) {
                 <input
                   name="email"
                   type="email"
+                  value={email}
                   placeholder="Email"
                   className="w-full p-3 shadow-md rounded-md focus:ring-2 focus:ring-green-500 outline-none"
                   onChange={(e) => setEmail(e.target.value)}
@@ -125,6 +128,7 @@ function Auth(props) {
                   name="password"
                   type="password"
                   placeholder="Password"
+                  value={password}
                   className="w-full p-3 shadow-md rounded-md focus:ring-2 focus:ring-green-500 outline-none"
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -142,6 +146,7 @@ function Auth(props) {
                 <input
                   name="username"
                   type="text"
+                  value={username}
                   placeholder="Username"
                   className="w-full p-3 shadow-md rounded-md focus:ring-2 focus:ring-green-500 outline-none"
                   onChange={(e) => setUsername(e.target.value)}
@@ -149,14 +154,26 @@ function Auth(props) {
                 <input
                   name="email"
                   type="email"
+                  value={email}
                   placeholder="Email"
                   className="w-full p-3 shadow-md rounded-md focus:ring-2 focus:ring-green-500 outline-none"
                   onChange={(e) => setEmail(e.target.value)}
                 />
+                
+                <input
+                  name="number"
+                  type="tel"
+                  value={number}
+                  placeholder="Whatsapp number"
+                  className="w-full p-3 shadow-md rounded-md focus:ring-2 focus:ring-green-500 outline-none"
+                  onChange={(e) => setNumber(e.target.value)}
+                />
+
                 <input
                   name="password"
                   type="password"
                   placeholder="Password"
+                  value={password}
                   className="w-full p-3 shadow-md rounded-md focus:ring-2 focus:ring-green-500 outline-none"
                   onChange={(e) => setPassword(e.target.value)}
                 />
@@ -171,7 +188,6 @@ function Auth(props) {
           <motion.div
             onClick={showSignIn ? signIn : signUp}
             className="w-full"
-            // className="w-full py-3 text-lg font-semibold text-white bg-green-500 rounded-md shadow-lg hover:bg-green-600 transition"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >

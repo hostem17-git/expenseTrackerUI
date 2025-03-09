@@ -19,86 +19,86 @@ export default function Layout() {
   };
 
   return (
-    <div className="flex flex-col h-svh bg-[url(/homeBG-dark.png)] ">
-      <div className="flex justify-between bg-emerald-100 px-2 fixed top-0 left-0 right-0">
+    <div className="flex flex-col h-svh bg-[url(/homeBGdark.png)] bg-black ">
+      <div className="flex justify-between text-white bg-white/20 border border-white/20 shadow-2xl backdrop-blur-xs px-2 fixed top-0 left-0 right-0">
         {/* Header */}
         <nav className="flex ">
           <Link
             className="cursor-pointer flex items-center justify-center"
             to="/"
           >
-            <h1 className="py-1 mr-2 text-xl font-bold h-full">
-              <div className="text-lg md:text-xl font-bold text-[#25D366]">
-                Whats
-                <span className="text-white drop-shadow-[0_0_2px_#25D366]">
-                  Pense
-                </span>
-              </div>
+            <h1 className="text-xl md:text-2xl font-extrabold text-[#128C7E] tracking-wide drop-shadow-xl">
+              Whats
+              <span className="text-white drop-shadow-[0_0_8px_#128C7E]">
+                Pense
+              </span>
             </h1>
           </Link>
-
-          {/* TODO: handle active path */}
+        </nav>
+        <div className="flex ">
+          {/* //TODO: handle active path */}
           <ul className="sm:flex items-center hidden">
-            <li className=" flex items-center mx-1 cursor-pointer">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-                />
-              </svg>
-              <NavLink className={(isActive) => `py-2 mx-1 `} to="/user">
-                My profile
-              </NavLink>
-            </li>
-            <li className=" flex items-center mx-1 cursor-pointer">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15 8.25H9m6 3H9m3 6-3-3h1.5a3 3 0 1 0 0-6M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                />
-              </svg>
 
-              <NavLink className={(isActive) => `py-2 mx-1 `} to="/expenses">
+            <li className=" flex items-center mx-1 cursor-pointer">
+              <NavLink className="flex" to="/expenses">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15 8.25H9m6 3H9m3 6-3-3h1.5a3 3 0 1 0 0-6M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                  />
+                </svg>
                 Expenses
               </NavLink>
             </li>
+            <li className=" flex items-center mx-1 cursor-pointer">
+              <NavLink className="flex" to="/user">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+                  />
+                </svg>
+                My profile
+              </NavLink>
+            </li>
           </ul>
-        </nav>
-        <div
-          onClick={handleLogout}
-          className="flex items-center rounded-md  m-1 p-1 px-2 bg-red-500 text-white outline-red-500 hover:outline hover:text-red-500 hover:bg-white cursor-pointer"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-4 h-4 "
+
+          <div
+            onClick={handleLogout}
+            className="flex items-center rounded-md  m-1 p-1 px-2 bg-red-500 text-white outline-red-500 hover:outline hover:text-red-500 hover:bg-white cursor-pointer"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9"
-            />
-          </svg>
-          <span className="ml-2 hidden sm:inline">Logout</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="w-4 h-4 "
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9"
+              />
+            </svg>
+            <span className="ml-2 hidden sm:inline">Logout</span>
+          </div>
         </div>
       </div>
 
@@ -108,7 +108,7 @@ export default function Layout() {
 
       {/* Footer */}
       <>
-        <div className="bg-emerald-100 py-1 flex sm:hidden">
+        <div className=" text-white bg-white/20 border border-white/20 shadow-2xl backdrop-blur-xs py-1 flex sm:hidden">
           <ul className=" flex items-center w-full justify-around">
             <li className="flex flex-col items-center justify-center ">
               <svg
@@ -149,7 +149,7 @@ export default function Layout() {
           </ul>
         </div>
 
-        <div className=" hidden sm:flex w-svw items-center justify-center bg-emrald-50">
+        <div className=" hidden sm:flex w-svw items-center justify-center text-white bg-white/20 border border-white/20 shadow-2xl backdrop-blur-xs">
           ©2024
         </div>
       </>
