@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import apiRequest from "../lib/apiRequest";
 import { useNavigate } from "react-router";
+import { motion, AnimatePresence } from "framer-motion";
 
 function Auth(props) {
   const [showSignIn, setShowSignIn] = useState(true);
@@ -16,6 +17,7 @@ function Auth(props) {
   };
 
   const signIn = async () => {
+
     try {
       const result = await apiRequest.post("/auth/signin", {
         email,
@@ -49,98 +51,124 @@ function Auth(props) {
     console.log(result);
   };
 
+  const resetForm = ()=>{
+    setEmail("");
+    setPassword("");
+    setUsername("");
+    console.log("rrrrrrrrrrr");
+  }
+
   return (
     <div
-      onClick={hideAuth}
-      className="absolute w-full h-full bg-teal-100/60 flex items-center justify-center z-10"
+    onClick={hideAuth}
+    className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50"
+  >
+    <div
+      onClick={(e) => e.stopPropagation()}
+      className="bg-white shadow-xl rounded-lg p-6 w-full max-w-md min-h-[40vh] flex flex-col justify-between"
     >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="border-emerald-200 border w-1/4 shadow-lg rounded-sm bg-emerald-50 min-h-1/3 min-w-75 flex flex-col justify-around"
-      >
-        {/* Tab Switch */}
-        <div className="flex ">
-          <button
-            className={`p-2 w-1/2 text-center ${
-              showSignIn
-                ? "border-b-2 border-[#25D366] font-semibold"
-                : "text-gray-500"
-            }`}
-            onClick={() => setShowSignIn(true)}
-          >
-            Sign In
-          </button>
-          <button
-            className={`p-2 w-1/2 text-center ${
-              !showSignIn
-                ? "border-b-2 border-[#25D366] font-semibold"
-                : "text-gray-500"
-            }`}
-            onClick={() => setShowSignIn(false)}
-          >
-            Sign Up
-          </button>
-        </div>
+      {/* Tab Switch */}
+      <div className="flex shadow-md relative bg-gray-100 rounded-md p-1">
+        <motion.div
+          className="absolute top-0 bottom-0 left-0 w-1/2 bg-white rounded-md shadow-lg"
+          animate={{ left: showSignIn ? "0%" : "50%" }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+        />
+        <button
+          className={`flex-1 py-3 text-lg font-medium relative z-10 transition-colors ${
+            showSignIn ? "text-green-600 font-semibold" : "text-gray-500 hover:text-green-600"
+          }`}
+          onClick={() => {setShowSignIn(true);resetForm();}}
+        >
+          Sign In
+        </button>
+        <button
+          className={`flex-1 py-3 text-lg font-medium relative z-10 transition-colors ${
+            !showSignIn ? "text-green-600 font-semibold" : "text-gray-500 hover:text-green-600"
+          }`}
+          onClick={() => {setShowSignIn(false);resetForm();}}
+        >
+          Sign Up
+        </button>
+      </div>
 
-        <div className="my-2">
+      {/* Form with Animations */}
+      <div className="mt-4 relative">
+        <AnimatePresence mode="wait">
           {showSignIn ? (
-            <form className="flex flex-col">
+            <motion.form
+              key="signin"
+              className="space-y-4"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
               <input
                 name="email"
-                type="text"
-                placeholder="email"
-                className="p-2 border-b-1 border-emerald-200 outline-none"
+                type="email"
+                placeholder="Email"
+                className="w-full p-3 shadow-md rounded-md focus:ring-2 focus:ring-green-500 outline-none"
                 onChange={(e) => setEmail(e.target.value)}
               />
               <input
                 name="password"
                 type="password"
                 placeholder="Password"
-                className="p-2 border-b-1 border-emerald-200 outline-none"
+                className="w-full p-3 shadow-md rounded-md focus:ring-2 focus:ring-green-500 outline-none"
                 onChange={(e) => setPassword(e.target.value)}
               />
-
-              {error && <span className="test">{error}</span>}
-            </form>
+              {error && <span className="text-red-500 text-sm">{error}</span>}
+            </motion.form>
           ) : (
-            <form className="flex flex-col">
+            <motion.form
+              key="signup"
+              className="space-y-4"
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 50 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
               <input
                 name="username"
                 type="text"
                 placeholder="Username"
-                className="p-2 border-b-1 border-emerald-200 outline-none"
+                className="w-full p-3 shadow-md rounded-md focus:ring-2 focus:ring-green-500 outline-none"
                 onChange={(e) => setUsername(e.target.value)}
               />
-
               <input
-                name="Email"
-                type="text"
+                name="email"
+                type="email"
                 placeholder="Email"
-                className="p-2 border-b-1 border-emerald-200 outline-none"
+                className="w-full p-3 shadow-md rounded-md focus:ring-2 focus:ring-green-500 outline-none"
                 onChange={(e) => setEmail(e.target.value)}
               />
               <input
                 name="password"
                 type="password"
                 placeholder="Password"
-                className="p-2 border-b-1 border-emerald-200 outline-none"
+                className="w-full p-3 shadow-md rounded-md focus:ring-2 focus:ring-green-500 outline-none"
                 onChange={(e) => setPassword(e.target.value)}
               />
-              {error && <span className="test">{error}</span>}
-            </form>
+              {error && <span className="text-red-500 text-sm">{error}</span>}
+            </motion.form>
           )}
-        </div>
+        </AnimatePresence>
+      </div>
 
-        <div className="flex justify-center">
-          <button
-            onClick={showSignIn ? signIn : signUp}
-            className="cursor-pointer py-1 px-2 rounded-full font-semibold text-lg text-white bg-green-400 w-1/4 hover:outline hover:text-green-400 hover:bg-white"
-          >
-            {showSignIn ? "Signin" : "Sign up "}
-          </button>
-        </div>
+      {/* Submit Button */}
+      <div className="flex justify-center mt-4">
+        <motion.button
+          onClick={showSignIn ? signIn : signUp}
+          className="w-full py-3 text-lg font-semibold text-white bg-green-500 rounded-md shadow-lg hover:bg-green-600 transition"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {showSignIn ? "Sign In" : "Sign Up"}
+        </motion.button>
       </div>
     </div>
+  </div>
   );
 }
 
