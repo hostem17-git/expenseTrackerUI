@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 import apiRequest from "../lib/apiRequest";
+import Dropdown from "../components/DropDown";
 
 function Expenses() {
   const formatDate = (date) => date.toISOString().split("T")[0];
+
+  const [dropdownValue,setDropdownValue] = useState("Today");
 
   const [data, setData] = useState(null);
 
   const currentDate = new Date();
 
   const [endDate, setEndDate] = useState(formatDate(currentDate));
+  
   const [startDate, setStartDate] = useState(
     formatDate(new Date(currentDate.getFullYear(), currentDate.getMonth(), 1))
   );
@@ -20,11 +24,15 @@ function Expenses() {
   };
   const setRangeToCurrentWeek = () => {
     const today = new Date();
-    const dayOfWeek = today.getDay();
+    const dayOfWeek = today.getDay(); 
+    
     const monday = new Date(today);
-    monday.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1)); // Adjust for Monday
-    setStartDate(formatDate(monday));
-    setEndDate(formatDate(today));
+    monday.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1)); 
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+  
+    setStartDate(formatDate(monday)); 
+    setEndDate(formatDate(sunday)); 
   };
   const setRangeToMonth = () => {
     const firstDay = new Date(
@@ -53,6 +61,33 @@ function Expenses() {
     setEndDate(formatDate(lastDay));
   };
 
+  const dropDownOptions = [
+    "Custom",
+    "Today",
+    "Current Week",
+    "Current Month",
+    "Current Quarter",
+  ];
+
+  useEffect(()=>{
+    switch (dropdownValue) {
+      case "Today":
+        setRangeToToday();
+        break;
+      case "Current Week":
+        setRangeToCurrentWeek();
+        break;
+      case "Current Month":
+        setRangeToMonth();
+        break;
+      case "Current Quarter":
+        setRangeToCurrentQuarter();
+        break;
+    }
+
+  },[dropdownValue])
+
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -72,20 +107,30 @@ function Expenses() {
   }, [startDate, endDate]);
 
   console.log(startDate, endDate);
+
   return (
-    <div className="bg-amber-400 w-full h-full flex items-center justify-center p-20">
-      <div className="bg-blue-600 w-full h-full flex">
+    <div className="w-full flex-1 flex items-center justify-center p-5">
+      <div className="bg-black/10 backdrop-blur-xs w-full h-full flex">
         <div className="left w-1/2 h-full outline">
-          <div className="date_container outline flex items-center justify-evenly">
+          <div className="date_container outline flex items-center justify-evenly text-white">
+          <Dropdown
+              options={dropDownOptions}
+              onSelect={setDropdownValue}
+              defaultOption={dropdownValue}
+            />
             <div className="flex  w-fit px-2 items-center ">
               <span className="font-semibold mr-2">Start</span>
               <input
                 type="date"
                 value={startDate}
+                disabled={ !(dropdownValue=="Custom")}
+
                 onChange={(e) => {
                   setStartDate(e.target.value);
                 }}
-                className="bg-gray-100/5 p-2 hover:bg-gray-100/20 cursor-pointer inset-shadow-m"
+                
+                className={`bg-gray-100/5 p-2  cursor-pointer inset-shadow-m ${dropdownValue=="Custom"?"hover:bg-gray-100/20 ":""}`}
+
               />
             </div>
 
@@ -97,37 +142,12 @@ function Expenses() {
                 onChange={(e) => {
                   setEndDate(e.target.value);
                 }}
-                className="bg-gray-100/5 p-2 hover:bg-gray-100/20 cursor-pointer inset-shadow-m"
+                disabled={ !(dropdownValue=="Custom")}
+                className={`bg-gray-100/5 p-2  cursor-pointer inset-shadow-m ${dropdownValue=="Custom"?"hover:bg-gray-100/20 ":""}`}
               />
             </div>
 
-            <button
-              className="cursor-pointer mx-2 px-2 text-sm "
-              onClick={setRangeToToday}
-            >
-              Today
-            </button>
 
-            <button
-              className="cursor-pointer mx-2 px-2 text-sm "
-              onClick={setRangeToCurrentWeek}
-            >
-              Current Week
-            </button>
-
-            <button
-              className="cursor-pointer mx-2 px-2 text-sm "
-              onClick={setRangeToMonth}
-            >
-              Current Month
-            </button>
-
-            <button
-              className="cursor-pointer mx-2 px-2 text-sm "
-              onClick={setRangeToCurrentQuarter}
-            >
-              Current Quarter
-            </button>
           </div>
         </div>
         <div className="right w-1/2 h-full outline"> right</div>
