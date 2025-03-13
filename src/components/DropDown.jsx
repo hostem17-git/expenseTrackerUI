@@ -13,7 +13,7 @@ const Dropdown = ({ options, onSelect,defaultOption}) => {   // Accepts options 
   };
 
   return (
-    <div className="relative w-64">
+    <div className="relative w-64 flex-1">
       {/* Dropdown Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}

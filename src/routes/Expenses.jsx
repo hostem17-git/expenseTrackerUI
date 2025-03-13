@@ -48,50 +48,6 @@ function Expenses() {
     setEndDate(end);
   };  
 
-  const setRangeToToday = () => {
-    const today = formatDate(new Date());
-    setStartDate(today);
-    setEndDate(today);
-  };
-
-  const setRangeToCurrentWeek = () => {
-    const today = new Date();
-    const dayOfWeek = today.getDay(); 
-    
-    const monday = new Date(today);
-    monday.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1)); 
-    const sunday = new Date(monday);
-    sunday.setDate(monday.getDate() + 6);
-  
-    setStartDate(formatDate(monday)); 
-    setEndDate(formatDate(sunday)); 
-  };
-  const setRangeToMonth = () => {
-    const firstDay = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      1
-    );
-    const lastDay = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() + 1,
-      0
-    );
-    setStartDate(formatDate(firstDay));
-    setEndDate(formatDate(lastDay));
-  };
-  const setRangeToCurrentQuarter = () => {
-    const month = currentDate.getMonth();
-    const quarterStartMonth = Math.floor(month / 3) * 3;
-    const firstDay = new Date(currentDate.getFullYear(), quarterStartMonth, 1);
-    const lastDay = new Date(
-      currentDate.getFullYear(),
-      quarterStartMonth + 3,
-      0
-    );
-    setStartDate(formatDate(firstDay));
-    setEndDate(formatDate(lastDay));
-  };
 
   const dropDownOptions = [
     "Custom",
@@ -138,7 +94,7 @@ function Expenses() {
               onSelect={setDropdownValue}
               defaultOption={dropdownValue}
             />
-            <div className="flex  w-fit px-2 items-center ">
+            <div className="flex flex-1 w-fit px-2 items-center ">
               <span className="font-semibold mr-2">Start</span>
               <input
                 type="date"
@@ -154,7 +110,7 @@ function Expenses() {
               />
             </div>
 
-            <div className="flex items-center justify-between w-fit px-2 ">
+            <div className="flex flex-1 items-center w-fit px-2 ">
               <span className="font-semibold mr-2">End</span>
               <input
                 type="date"
