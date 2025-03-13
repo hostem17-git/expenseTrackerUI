@@ -19,8 +19,8 @@ export default function Layout() {
   };
 
   return (
-    <div className="flex flex-col h-svh bg-[url(/homeBGdark.png)] bg-black ">
-      <div className="flex justify-between text-white bg-white/20 border border-white/20 shadow-2xl backdrop-blur-xs px-2 fixed top-0 left-0 right-0">
+    <div className="flex flex-col min-h-svh bg-[url(/homeBGdark.png)] bg-black " >
+      <div className="flex justify-between text-white bg-white/20 border border-white/20 shadow-2xl backdrop-blur-xs px-2 fixed top-0 left-0 right-0 z-10">
         {/* Header */}
         <nav className="flex ">
           <Link

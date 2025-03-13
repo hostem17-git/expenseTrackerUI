@@ -17,11 +17,43 @@ function Expenses() {
     formatDate(new Date(currentDate.getFullYear(), currentDate.getMonth(), 1))
   );
 
+  const setRange = (type) => {
+    let start, end;
+    const today = new Date();
+    switch (type) {
+      case "Today":
+        start = end = formatDate(today);
+        break;
+      case "Current Week":
+        const monday = new Date(today);
+        monday.setDate(today.getDate() - (today.getDay() === 0 ? 6 : today.getDay() - 1));
+        const sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6);
+        start = formatDate(monday);
+        end = formatDate(sunday);
+        break;
+      case "Current Month":
+        start = formatDate(new Date(today.getFullYear(), today.getMonth(), 1));
+        end = formatDate(new Date(today.getFullYear(), today.getMonth() + 1, 0));
+        break;
+      case "Current Quarter":
+        const quarterStartMonth = Math.floor(today.getMonth() / 3) * 3;
+        start = formatDate(new Date(today.getFullYear(), quarterStartMonth, 1));
+        end = formatDate(new Date(today.getFullYear(), quarterStartMonth + 3, 0));
+        break;
+      default:
+        return;
+    }
+    setStartDate(start);
+    setEndDate(end);
+  };  
+
   const setRangeToToday = () => {
     const today = formatDate(new Date());
     setStartDate(today);
     setEndDate(today);
   };
+
   const setRangeToCurrentWeek = () => {
     const today = new Date();
     const dayOfWeek = today.getDay(); 
@@ -69,23 +101,11 @@ function Expenses() {
     "Current Quarter",
   ];
 
-  useEffect(()=>{
-    switch (dropdownValue) {
-      case "Today":
-        setRangeToToday();
-        break;
-      case "Current Week":
-        setRangeToCurrentWeek();
-        break;
-      case "Current Month":
-        setRangeToMonth();
-        break;
-      case "Current Quarter":
-        setRangeToCurrentQuarter();
-        break;
+  useEffect(() => {
+    if (dropdownValue !== "Custom") {
+      setRange(dropdownValue);
     }
-
-  },[dropdownValue])
+  }, [dropdownValue]);
 
 
   useEffect(() => {
@@ -96,8 +116,8 @@ function Expenses() {
           endDate,
           limit: "10000",
         });
-
-        console.log(result);
+        setData(result?.data?.data)
+        console.log(result.data.data);
       } catch (error) {
         console.error(error);
       }
@@ -109,10 +129,10 @@ function Expenses() {
   console.log(startDate, endDate);
 
   return (
-    <div className="w-full flex-1 flex items-center justify-center p-5">
-      <div className="bg-black/10 backdrop-blur-xs w-full h-full flex">
-        <div className="left w-1/2 h-full outline">
-          <div className="date_container outline flex items-center justify-evenly text-white">
+    <div className="w-full p-4 flex-1 flex outline-green-500 outline ">
+      <div className=" bg-black/10 backdrop-blur-xs w-full flex-1 flex flex-grow flex-wrap-reverse">
+        <div className="left w-full md:w-1/2 h-full outline min-w-80 min-h-52 max-h-svh overflow-y-scroll">
+          <div className="date_container outline flex flex-wrap items-center justify-evenly text-white">
           <Dropdown
               options={dropDownOptions}
               onSelect={setDropdownValue}
@@ -150,7 +170,7 @@ function Expenses() {
 
           </div>
         </div>
-        <div className="right w-1/2 h-full outline"> right</div>
+        <div className="right w-full md:w-1/2 h-full outline min-w-80 min-h-52 max-h-svh"> right</div>
       </div>
     </div>
   );
