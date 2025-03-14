@@ -33,6 +33,7 @@ function Auth(props) {
         // UseNotification
       }
     } catch (error) {
+      alert(error);
       console.log(error);
     }
   };

@@ -83,12 +83,11 @@ function Expenses() {
     console.log(startDate);
   }, [startDate, endDate]);
 
-  console.log(startDate, endDate);
 
   return (
     <div className="w-full p-4 flex-1 flex outline-green-500 outline ">
       <div className=" bg-black/10 backdrop-blur-xs w-full flex-1 flex flex-grow flex-wrap-reverse max-h-[85svh]">
-        <div className="left w-full md:w-1/2 h-full outline min-w-80 min-h-52 max-h-svh overflow-y-scroll">
+        <div className="left w-full md:w-1/2 h-full outline min-w-80 min-h-52 max-h-svh overflow-y-scroll overflow-x-hidden">
           <div className="date_container outline flex flex-wrap items-center justify-evenly text-white">
           <Dropdown
               options={dropDownOptions}
