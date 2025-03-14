@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import apiRequest from "../lib/apiRequest";
 import Dropdown from "../components/DropDown";
+import ExpenseList from "../components/ExpenseList";
 
 function Expenses() {
   const formatDate = (date) => date.toISOString().split("T")[0];
@@ -86,7 +87,7 @@ function Expenses() {
 
   return (
     <div className="w-full p-4 flex-1 flex outline-green-500 outline ">
-      <div className=" bg-black/10 backdrop-blur-xs w-full flex-1 flex flex-grow flex-wrap-reverse">
+      <div className=" bg-black/10 backdrop-blur-xs w-full flex-1 flex flex-grow flex-wrap-reverse max-h-[85svh]">
         <div className="left w-full md:w-1/2 h-full outline min-w-80 min-h-52 max-h-svh overflow-y-scroll">
           <div className="date_container outline flex flex-wrap items-center justify-evenly text-white">
           <Dropdown
@@ -125,6 +126,8 @@ function Expenses() {
 
 
           </div>
+
+          <ExpenseList expenses={data} onSave={()=>console.log("HI")}/>
         </div>
         <div className="right w-full md:w-1/2 h-full outline min-w-80 min-h-52 max-h-svh"> right</div>
       </div>
