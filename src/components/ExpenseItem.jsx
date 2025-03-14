@@ -27,7 +27,7 @@ export const ExpenseItem = ({expense, handleChange,index}) => {
       custom={index} 
     >
         {/* Expense Info */}
-      <div className="flex-1 outline flex flex-col justify-around px-2 transition">
+      <div className="flex-1 flex flex-col justify-around px-2 transition">
         <div className="flex w-full justify-between">
           <p>{expense?.expense}</p>
           <p>{expense?.amount}</p>
@@ -36,7 +36,7 @@ export const ExpenseItem = ({expense, handleChange,index}) => {
         <p>{expense?.secondarycategory}</p>
       </div>
       <motion.div
-  
+
       >
         
         {/* Action buttons */}

@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@nivo/pie": "^0.88.0",
     "@tailwindcss/vite": "^4.0.3",
     "axios": "^1.7.9",
     "framer-motion": "^12.4.10",
