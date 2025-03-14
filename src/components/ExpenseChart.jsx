@@ -14,7 +14,7 @@ const ExpenseChart = ({ data, onSliceClick }) => {
         padAngle={0.7}
         cornerRadius={5}
         activeOuterRadiusOffset={8} 
-        colors={{ scheme: "category10" }}
+        colors={{ scheme: "set3" }}
         borderWidth={2}
         borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
         arcLinkLabelsSkipAngle={10}
