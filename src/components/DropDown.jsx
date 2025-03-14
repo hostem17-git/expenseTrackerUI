@@ -29,11 +29,11 @@ const Dropdown = ({ options, onSelect,defaultOption}) => {   // Accepts options 
       <AnimatePresence>
         {isOpen && (
           <motion.ul
-            className="absolute w-full mt-2 bg-white/10 backdrop-blur-lg rounded-lg shadow-xl border border-white/20 overflow-hidden z-10"
+            className="absolute w-full mt-2 bg-black/55 block backdrop-blur-lg rounded-lg shadow-2xl border border-white/20 overflow-hidden z-10"
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
-          >
+          ><div className="w-full h-full bg-white/40  backdrop-blur-lg">
             {options.map((option, index) => (
               <li
                 key={index}
@@ -43,6 +43,8 @@ const Dropdown = ({ options, onSelect,defaultOption}) => {   // Accepts options 
                 {option}
               </li>
             ))}
+          </div>
+
           </motion.ul>
         )}
       </AnimatePresence>

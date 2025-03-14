@@ -20,6 +20,11 @@ const ExpenseList = ({ expenses, onSave }) => {
     setEditableRow(null);
   };
 
+  const getDateFromTimestamp = (timestamp)=>{
+    const date = new Date(timestamp);
+    return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+  }
+
   return (
     <table className="w-full border-collapse border border-gray-300 text-white">
       <thead>
@@ -59,7 +64,7 @@ const ExpenseList = ({ expenses, onSave }) => {
                 expense.amount
               )}
             </td>
-            <td className="border p-2">
+            <td className="border p-2 break-keep whitespace-nowrap">
               {editableRow === expense.id ? (
                 <input
                   type="date"
@@ -68,7 +73,7 @@ const ExpenseList = ({ expenses, onSave }) => {
                   className="border p-1 w-full"
                 />
               ) : (
-                expense.created
+                getDateFromTimestamp(expense.created)
               )}
             </td>
             <td className="border p-2">
