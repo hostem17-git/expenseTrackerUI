@@ -1,16 +1,17 @@
 import { ResponsivePie } from "@nivo/pie";
+import { useState } from "react";
 
 const ExpenseChart = ({ data, onSliceClick ,type}) => {
     if(!data){
-        if(type === "primary")
-          return <div className="w-full flex-1 outline border-b-2 border-white/10 text-white text-center flex items-center justify-center">No data</div>
-        else{
-          return <div className="w-full flex-1 outline text-white text-center flex items-center justify-center">Select a primary category</div>
-        }
+      return (
+        <div className="w-full flex-1 outline text-white text-center flex items-center justify-center">
+          {type === "primary" ? "No data" : "Select a primary category"}
+        </div>
+      );
     }
 
   return (
-    <div className="border-b-2 border-white/20" style={{ height:300}}>
+    <div className={`border-white/20 ${type ==="primary"? "border-b-2":" "}`} style={{ height:300}}>
       <ResponsivePie
         data={data}
         margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
