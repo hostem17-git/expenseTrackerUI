@@ -1,10 +1,21 @@
-// sticky bottom-0 left-0 right-0 bg-white/10 backdrop-blur-xs
-import React from "react";
+import React, { useEffect } from "react";
 
-const Pagination = ({ currentPage, totalPages, rowsPerPage, setRowsPerPage, onPageChange }) => {
+const Pagination = ({
+  currentPage,
+  totalPages,
+  rowsPerPage,
+  setRowsPerPage,
+  onPageChange,
+}) => {
+
+      useEffect(()=>{
+        console.log("@!!!!!!!!!!!!!!!")
+        console.log(currentPage)
+      },[currentPage])
+    
   const getPageNumbers = () => {
     const pages = [];
-    const maxButtons = 5; // Number of visible page buttons
+    const maxButtons = 5;
 
     if (totalPages <= maxButtons) {
       return Array.from({ length: totalPages }, (_, i) => i + 1);
@@ -18,17 +29,19 @@ const Pagination = ({ currentPage, totalPages, rowsPerPage, setRowsPerPage, onPa
       pages.push(i);
     }
     if (endPage < totalPages - 1) pages.push("...");
-
+    console.log(pages);
     return [1, ...pages, totalPages];
   };
 
   return (
-    <div className="flex justify-center mt-4 sticky bottom-0 left-0 right-0 bg-white/10 backdrop-blur-xs">
-      <div className="flex justify-center items-center w-full px-4 py-2 backdrop-blur-md bg-black/40 border border-white/10 shadow-lg">
+    <div className="flex justify-center mt-4 sticky bottom-0 left-0 right-0 bg-white/15 backdrop-blur-3xl">
+      <div className="flex justify-center items-center w-full px-4 py-2 backdrop-blur-3xl bg-black/40 border border-white/10 shadow-lg">
         {/* Previous Button */}
         <button
           className={`px-3 py-1 rounded-md ${
-            currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-white/20"
+            currentPage === 1
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:bg-white/20"
           }`}
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
@@ -39,10 +52,12 @@ const Pagination = ({ currentPage, totalPages, rowsPerPage, setRowsPerPage, onPa
         {/* Page Numbers */}
         {getPageNumbers().map((page, index) =>
           page === "..." ? (
-            <span key={index} className="px-3 py-1 text-white">...</span>
+            <span key={index} className="px-3 py-1 text-white">
+              ...
+            </span>
           ) : (
             <button
-              key={page}
+              key={index}
               className={`px-3 py-1 rounded-md transition ${
                 page === currentPage
                   ? "bg-white text-black font-bold"
@@ -58,7 +73,9 @@ const Pagination = ({ currentPage, totalPages, rowsPerPage, setRowsPerPage, onPa
         {/* Next Button */}
         <button
           className={`px-3 py-1 rounded-md ${
-            currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-white/20"
+            currentPage === totalPages
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:bg-white/20"
           }`}
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
