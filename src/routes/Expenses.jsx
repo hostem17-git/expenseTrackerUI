@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import apiRequest from "../lib/apiRequest";
 import Dropdown from "../components/DropDown";
 import ExpenseList from "../components/ExpenseList";
@@ -8,8 +8,8 @@ import IconButton from "../components/IconButton";
 
 function Expenses() {
   const formatDate = (date) => {
-    const year = date.getFullYear(); 
-    const month = String(date.getMonth() + 1).padStart(2, "0"); 
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
@@ -63,25 +63,40 @@ function Expenses() {
 
     setStartDate(start);
     setEndDate(end);
+    fetchExpenses(start, end);
+
   });
 
   const fetchExpenses = useCallback(
-    async (startDate, endDate, primaryCategory, secondaryCategory) => {
+    async (startDate, endDate, primarycategory, secondarycategory) => {
       try {
         const result = await apiRequest.get("/expense", {
-          startDate,
-          endDate,
-          limit: rowsPerPage,
-          offset: currentPage * rowsPerPage,
+          params: {
+            startDate,
+            endDate,
+            limit: rowsPerPage,
+            offset: currentPage * rowsPerPage,
+            primarycategory,
+            secondarycategory,
+          },
         });
-        console.log(result);
-        setData(result?.data?.data.expenses);
-        // console.log(result.data.data);
+
+        setData(result?.data?.data?.payload.expenses);
+
+        console.log("--------------------",result?.data?.data?.rowCount)
+        setTotalPages(
+          Math.floor(result?.data?.data?.rowCount/ rowsPerPage)
+        );
       } catch (error) {
         console.error(error);
       }
     }
   );
+
+  useEffect(()=>{
+    fetchExpenses(startDate,endDate);
+  },[currentPage,rowsPerPage]);
+
 
   const fetchPrimarySummary = useCallback(async () => {
     try {
@@ -91,7 +106,6 @@ function Expenses() {
         limit: "10000",
       });
       setSummaryData(result?.data?.data);
-      // console.log(result?.data.data);
     } catch (error) {
       console.error(error);
     }
@@ -138,12 +152,13 @@ function Expenses() {
   }, [selectedSlice]);
 
   useEffect(() => {
-    fetchExpenses();
+    console.log("====================", startDate, endDate);
+    fetchExpenses(startDate, endDate);
     fetchPrimarySummary();
-  }, [startDate, endDate]);
+  }, []);
 
   return (
-    <div className="w-full p-4 flex-1 flex ">
+    <div className="w-full p-2 md:p-4 flex-1 flex ">
       <div className=" bg-black/35 backdrop-blur-xs w-full flex-1 flex flex-grow flex-wrap-reverse max-h-[85svh] overflow-y-scroll overflow-x-hidden thin-translucent-scrollbar">
         <div className="left w-full md:w-1/2 h-full outline min-w-80 min-h-52 max-h-svh overflow-y-scroll overflow-x-hidden scroll thin-translucent-scrollbar relative">
           <div className="date_container outline flex flex-wrap items-center justify-evenly text-white">
@@ -200,6 +215,7 @@ function Expenses() {
                     />
                   </svg>
                 }
+                onClick={()=>fetchExpenses(startDate,endDate)}
               />
             )}
           </div>
