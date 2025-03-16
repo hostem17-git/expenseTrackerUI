@@ -3,6 +3,7 @@ import apiRequest from "../lib/apiRequest";
 import Dropdown from "../components/DropDown";
 import ExpenseList from "../components/ExpenseList";
 import ExpenseChart from "../components/ExpenseChart";
+import Pagination from "../components/Pagination";
 
 function Expenses() {
   const formatDate = (date) => date.toISOString().split("T")[0];
@@ -135,7 +136,7 @@ function Expenses() {
   return (
     <div className="w-full p-4 flex-1 flex ">
       <div className=" bg-black/10 backdrop-blur-xs w-full flex-1 flex flex-grow flex-wrap-reverse max-h-[85svh] overflow-y-scroll overflow-x-hidden thin-translucent-scrollbar">
-        <div className="left w-full md:w-1/2 h-full outline min-w-80 min-h-52 max-h-svh overflow-y-scroll overflow-x-hidden scroll thin-translucent-scrollbar">
+        <div className="left w-full md:w-1/2 h-full outline min-w-80 min-h-52 max-h-svh overflow-y-scroll overflow-x-hidden scroll thin-translucent-scrollbar relative">
           <div className="date_container outline flex flex-wrap items-center justify-evenly text-white">
             <Dropdown
               options={dropDownOptions}
@@ -174,6 +175,8 @@ function Expenses() {
           </div>
 
           <ExpenseList expenses={data} onSave={() => console.log("HI")} />
+
+          <Pagination totalPages={100} currentPage={10}/>
         </div>
         <div className="right w-full md:w-1/2 h-full outline min-w-80 min-h-52 max-h-svh flex flex-col">
           <ExpenseChart data={summaryData} onSliceClick={handleSliceClick} type="primary" />
