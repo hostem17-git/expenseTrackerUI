@@ -175,10 +175,9 @@ function Expenses() {
 
           <ExpenseList expenses={data} onSave={() => console.log("HI")} />
         </div>
-        <div className="right w-full md:w-1/2 h-full outline min-w-80 min-h-52 max-h-svh">
-          <ExpenseChart data={summaryData} onSliceClick={handleSliceClick} />
-
-          <ExpenseChart data={secondaryData} onSliceClick={() => {}} />
+        <div className="right w-full md:w-1/2 h-full outline min-w-80 min-h-52 max-h-svh flex flex-col">
+          <ExpenseChart data={summaryData} onSliceClick={handleSliceClick} type="primary" />
+          <ExpenseChart data={secondaryData} type ="secondary"/>
         </div>
       </div>
     </div>
