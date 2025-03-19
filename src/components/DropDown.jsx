@@ -2,26 +2,25 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const Dropdown = ({ options, onSelect,defaultOption}) => {   // Accepts options & onSelect callback   // 1️⃣
-  const [isOpen, setIsOpen] = useState(false);  // Dropdown state  // 2️⃣
-  const [selected, setSelected] = useState(defaultOption);  // Default selected value  // 3️⃣
+const Dropdown = ({ options, onSelect, defaultOption,placeholder}) => {   
+  const [isOpen, setIsOpen] = useState(false); 
+  const [selected, setSelected] = useState(defaultOption);  
 
-  const handleSelect = (option) => {  // 4️⃣
+  const handleSelect = (option) => {  
     setSelected(option);
-    onSelect(option); // Notify parent
-    setIsOpen(false); // Close dropdown
+    onSelect(option); 
+    setIsOpen(false); 
   };
 
   return (
     <div className="relative w-64 flex-1">
-      {/* Dropdown Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex justify-between items-center px-4 py-2 text-white 
           bg-white/10 backdrop-blur-lg rounded-lg shadow-lg border border-white/20 
-          hover:bg-white/20 transition"
+          hover:bg-white/20 transition break-keep"
       >
-        {selected} {/* Show selected option */}
+        {selected || placeholder} 
         <ChevronDown size={20} className={`transition-transform ${isOpen ? "rotate-180" : ""}`} />
       </button>
 

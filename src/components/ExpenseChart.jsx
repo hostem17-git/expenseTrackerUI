@@ -28,7 +28,7 @@ const ExpenseChart = ({ data, onSliceClick ,type}) => {
         arcLinkLabelsColor={{ from: "color" }}
         arcLabelsSkipAngle={10}
         arcLabelsTextColor={{ from: "color", modifiers: [["darker", 2]] }}
-        onClick={(slice) => onSliceClick(slice)} // Handle Click
+        onClick={(slice) => onSliceClick(slice.label)} // Handle Click
         legends={[
           {
             anchor: 'bottom-left',
@@ -41,7 +41,7 @@ const ExpenseChart = ({ data, onSliceClick ,type}) => {
             symbolSize: 12,
             symbolShape: 'circle',
             itemTextColor: '#555',
-            onClick:(legend)=>onSliceClick(legend),
+            onClick:(legend)=>onSliceClick(legend.label),
             itemTextColor:"white",
   
           },
