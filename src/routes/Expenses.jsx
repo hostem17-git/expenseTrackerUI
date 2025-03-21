@@ -47,6 +47,7 @@ function Expenses() {
 
   const fetchExpenses = useCallback(
     async (startDate, endDate, primarycategory, secondarycategory) => {
+      setData(null);
       try {
         const result = await apiRequest.get("/expense", {
           params: {
@@ -71,6 +72,7 @@ function Expenses() {
 
   const fetchPrimarySummary = useCallback(async (startDate, endDate) => {
     try {
+      setSummaryData(null);
       const result = await apiRequest.get("/expense/summary", {
         params: {
           startDate,
@@ -86,6 +88,7 @@ function Expenses() {
   const fetchSecondayCategoryData = useCallback(
     async (startDate, endDate, primaryCategory) => {
       try {
+        setSecondaryData(null);
         const result = await apiRequest.get(
           `/expense/summary/${primaryCategory}`,
           {
@@ -166,7 +169,7 @@ function Expenses() {
       setDataLoading(false);
     };
 
-    getData();
+    if (dropdownValue !== "Custom") getData();
   }, [
     startDate,
     endDate,
@@ -239,7 +242,10 @@ function Expenses() {
                     />
                   </svg>
                 }
-                onClick={() => fetchExpenses(startDate, endDate)}
+                onClick={() => {
+                  fetchExpenses(startDate, endDate);
+                  fetchPrimarySummary(startDate, endDate);
+                }}
               />
             )}
             <br />
@@ -280,7 +286,6 @@ function Expenses() {
             onSliceClick={setSecondaryCategory}
             type="secondary"
             dataloading={dataloading}
-
           />
         </div>
       </div>

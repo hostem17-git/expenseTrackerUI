@@ -12,7 +12,6 @@ createRoot(document.getElementById("root")).render(
 );
 // TODO: Notifications
 // Todo: auto signout
-// TODO: Loading skeleton
 // Todo: no data
 // Edit expense
 // Add expense
