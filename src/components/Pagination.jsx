@@ -7,12 +7,6 @@ const Pagination = ({
   setRowsPerPage,
   onPageChange,
 }) => {
-
-      useEffect(()=>{
-        console.log("@!!!!!!!!!!!!!!!")
-        console.log(currentPage)
-      },[currentPage])
-    
   const getPageNumbers = () => {
     const pages = [];
     const maxButtons = 5;

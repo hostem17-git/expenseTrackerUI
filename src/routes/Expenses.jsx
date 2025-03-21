@@ -24,10 +24,11 @@ function Expenses() {
   const [primaryCategory, setPrimaryCategory] = useState(null);
   const [secondaryCategory, setSecondaryCategory] = useState(null);
   const [totalPages, setTotalPages] = useState(100);
+
   const dropDownOptions = [
     "Custom",
     "Today",
-    "Current Week",
+    "Current Week", 
     "Current Month",
     "Current Quarter",
   ];
@@ -125,21 +126,10 @@ function Expenses() {
       default:
         return;
     }
-
     end = formatDate(today);
-
     setStartDate(start);
     setEndDate(end);
-    fetchExpenses(start, end);
-    fetchPrimarySummary(start, end);
-
-    setPrimaryCategory(null);
-    setSecondaryCategory(null);
   });
-
-  useEffect(() => {
-    fetchExpenses(startDate, endDate);
-  }, [currentPage, rowsPerPage]);
 
   // Update Range on dropdown selection
   useEffect(() => {
@@ -148,29 +138,21 @@ function Expenses() {
     }
   }, [dropdownValue]);
 
-  useEffect(() => {
-    if (primaryCategory) {
-      fetchExpenses(startDate, endDate, primaryCategory);
-      fetchSecondayCategoryData(startDate, endDate, primaryCategory);
-    }
-  }, [primaryCategory]);
 
-  useEffect(() => {
-    if (primaryCategory && secondaryCategory) {
-      fetchExpenses(startDate, endDate, primaryCategory, secondaryCategory);
+  useEffect(()=>{
+    console.log("--------------------------")
+    console.log(startDate,endDate,primaryCategory,secondaryCategory,rowsPerPage,currentPage)
+    fetchExpenses(startDate,endDate,primaryCategory,secondaryCategory);
+    fetchPrimarySummary(startDate,endDate);
+    if(primaryCategory){
+      fetchSecondayCategoryData(startDate,endDate,primaryCategory)
     }
-    if (!secondaryCategory) {
-      setSecondaryData(null);
-    }
+  },
+  [startDate,endDate,primaryCategory,secondaryCategory,rowsPerPage,currentPage])
 
-    fetchExpenses(startDate, endDate, primaryCategory, secondaryCategory);
-  }, [secondaryCategory]);
-
-  useEffect(() => {
-    console.log("========On page load============", startDate, endDate);
-    fetchExpenses(startDate, endDate);
-    fetchPrimarySummary(startDate, endDate);
-  }, []);
+  useEffect(()=>{
+    setSecondaryCategory(null);
+  },[primaryCategory])
 
   return (
     <div className="w-full p-2 md:p-4 flex-1 flex ">
@@ -181,6 +163,7 @@ function Expenses() {
               options={dropDownOptions}
               onSelect={setDropdownValue}
               defaultOption={dropdownValue}
+              value={dropdownValue}
             />
             <div className="flex flex-1 w-fit px-2 items-center ">
               <span className="font-semibold mr-2">Start</span>
@@ -238,12 +221,14 @@ function Expenses() {
               options={primaryCategories}
               onSelect={setPrimaryCategory}
               placeholder={"Primary category"}
+              value ={primaryCategory}
             />
 
             <Dropdown
               options={secondaryCategories}
               onSelect={setSecondaryCategory}
               placeholder={"Secondary category"}
+              value={secondaryCategory}
             />
           </div>
 

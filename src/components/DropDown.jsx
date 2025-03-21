@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const Dropdown = ({ options, onSelect, defaultOption,placeholder}) => {   
+const Dropdown = ({ options, onSelect, defaultOption,placeholder,value}) => {   
   const [isOpen, setIsOpen] = useState(false); 
   const [selected, setSelected] = useState(defaultOption);  
+  useEffect(()=>{
+    setSelected(value);
+  },[value])
 
   const handleSelect = (option) => {  
     setSelected(option);
