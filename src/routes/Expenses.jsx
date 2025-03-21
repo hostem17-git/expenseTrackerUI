@@ -24,11 +24,12 @@ function Expenses() {
   const [primaryCategory, setPrimaryCategory] = useState(null);
   const [secondaryCategory, setSecondaryCategory] = useState(null);
   const [totalPages, setTotalPages] = useState(100);
+  const [dataloading, setDataLoading] = useState(false);
 
   const dropDownOptions = [
     "Custom",
     "Today",
-    "Current Week", 
+    "Current Week",
     "Current Month",
     "Current Quarter",
   ];
@@ -138,21 +139,46 @@ function Expenses() {
     }
   }, [dropdownValue]);
 
+  useEffect(() => {
+    console.log("--------------------------");
 
-  useEffect(()=>{
-    console.log("--------------------------")
-    console.log(startDate,endDate,primaryCategory,secondaryCategory,rowsPerPage,currentPage)
-    fetchExpenses(startDate,endDate,primaryCategory,secondaryCategory);
-    fetchPrimarySummary(startDate,endDate);
-    if(primaryCategory){
-      fetchSecondayCategoryData(startDate,endDate,primaryCategory)
-    }
-  },
-  [startDate,endDate,primaryCategory,secondaryCategory,rowsPerPage,currentPage])
+    console.log(
+      startDate,
+      endDate,
+      primaryCategory,
+      secondaryCategory,
+      rowsPerPage,
+      currentPage
+    );
 
-  useEffect(()=>{
+    const getData = async () => {
+      setDataLoading(true);
+      await fetchExpenses(
+        startDate,
+        endDate,
+        primaryCategory,
+        secondaryCategory
+      );
+      await fetchPrimarySummary(startDate, endDate);
+      if (primaryCategory) {
+        await fetchSecondayCategoryData(startDate, endDate, primaryCategory);
+      }
+      setDataLoading(false);
+    };
+
+    getData();
+  }, [
+    startDate,
+    endDate,
+    primaryCategory,
+    secondaryCategory,
+    rowsPerPage,
+    currentPage,
+  ]);
+
+  useEffect(() => {
     setSecondaryCategory(null);
-  },[primaryCategory])
+  }, [primaryCategory]);
 
   return (
     <div className="w-full p-2 md:p-4 flex-1 flex ">
@@ -221,7 +247,7 @@ function Expenses() {
               options={primaryCategories}
               onSelect={setPrimaryCategory}
               placeholder={"Primary category"}
-              value ={primaryCategory}
+              value={primaryCategory}
             />
 
             <Dropdown
@@ -247,11 +273,14 @@ function Expenses() {
             data={summaryData}
             onSliceClick={setPrimaryCategory}
             type="primary"
+            dataloading={dataloading}
           />
           <ExpenseChart
             data={secondaryData}
             onSliceClick={setSecondaryCategory}
             type="secondary"
+            dataloading={dataloading}
+
           />
         </div>
       </div>
