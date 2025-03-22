@@ -12,6 +12,6 @@ createRoot(document.getElementById("root")).render(
 // TODO: Notifications
 // Todo: auto signout
 // Todo: no data
-// Todo: Edit expense
+// Todo: Edit expense done, update date pending
 // Todo: Add expense
 // Todo: OTP login

@@ -3,21 +3,29 @@ import { motion, AnimatePresence } from "framer-motion";
 import IconButton from "./IconButton";
 import SkeletonLoaderLinear from "./SkeletonLoader";
 import Dropdown from "./DropDown";
-import { formatDate, primaryCategories, secondaryCategories } from "../lib/utils";
+import {
+  formatDate,
+  primaryCategories,
+  secondaryCategories,
+} from "../lib/utils";
+import apiRequest from "../lib/apiRequest";
 
 export const ExpenseItem = ({ expense, handleChange, index }) => {
   const [edit, setEdit] = useState(false);
-  const [editedExpense, setEditedExpense] = useState({
-    expense: null,
-    amount: null,
-    primarycategory: null,
-    secondarycategory: null,
-    created: null,
-    id: expense?.id,
-  });
+  const [editedExpense, setEditedExpense] = useState({...expense,id:expense?.id});
   const getDateFromTimestamp = useCallback((timestamp) => {
     const date = new Date(timestamp);
     return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+  });
+
+  const updateExpense = useCallback(async () => {
+    try {
+      const result = await apiRequest.put(`/expense/${expense?.id}`,editedExpense);
+      setEdit(false);
+      console.log(result)
+    } catch(error) {
+      console.log(error);S
+    }
   });
 
   const itemVariants = {
@@ -45,11 +53,13 @@ export const ExpenseItem = ({ expense, handleChange, index }) => {
       <div className="flex-6 flex flex-col justify-around px-2 transition">
         {edit ? (
           <input
-            className="outline outline-white/30 px-2 py-1"
+            className="outline outline-white/30 px-2 py-1 my-1"
             name="expense"
             type="text"
             value={editedExpense.expense || expense?.expense}
-            onChange={(e)=>setEditedExpense({...editedExpense,'expense':e.target.value})}
+            onChange={(e) =>
+              setEditedExpense({ ...editedExpense, expense: e.target.value })
+            }
           />
         ) : (
           <p>
@@ -119,15 +129,22 @@ export const ExpenseItem = ({ expense, handleChange, index }) => {
               {edit ? (
                 <input
                   type="date"
-                  value={formatDate(new Date(editedExpense.created || expense?.created))}
+                  value={formatDate(
+                    new Date(editedExpense.created || expense?.created)
+                  )}
                   onChange={(e) => {
-                    setEditedExpense({...editedExpense,created:e.target.value});
+                    setEditedExpense({
+                      ...editedExpense,
+                      created: e.target.value,
+                    });
                   }}
                   className="bg-gray-100/5 p-2  cursor-pointer inset-shadow-m hover:bg-gray-100/20"
                 />
               ) : (
                 <p>
-                  {getDateFromTimestamp(editedExpense.created || expense?.created)}
+                  {getDateFromTimestamp(
+                    editedExpense.created || expense?.created
+                  )}
                 </p>
               )}
             </>
@@ -135,58 +152,17 @@ export const ExpenseItem = ({ expense, handleChange, index }) => {
             <SkeletonLoaderLinear />
           )}
         </div>
-      </div>
-
-      <div className=" flex-1  flex items-center justify-center ">
-        {edit?
-                  <input
-                  className="outline outline-white/30 px-2 py-1"
-                  name="amouny"
-                  type="number"
-                  value={editedExpense.amount || expense?.amount}
-            onChange={(e)=>setEditedExpense({...editedExpense,amount:e.target.value})}
-
-                />
-        : 
-        editedExpense.amount || expense?.amount || <SkeletonLoaderLinear />}
-      </div>
-      {editedExpense.created || expense?.created ? (
-        <motion.div className="flex-1 flex">
-          {/* Action buttons */}
-          {!edit ? (
-            // edit
-            <div className="flex items-center flex-1 justify-center">
-              <IconButton
-                onClick={() => setEdit(true)}
-                buttonContent={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="#fff"
-                    className="size-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                    />
-                  </svg>
-                }
-                iconColor={"white"}
-              />
-            </div>
-          ) : (
+        <div className="">
+          {edit && (
             <motion.div
-              className="flex flex-col "
+              className="flex"
               initial={{ opacity: 0, x: 5 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 5 }}
             >
               {/* Save */}
               <IconButton
-                onClick={() => setEdit(false)}
+                onClick={updateExpense}
                 buttonContent={
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -242,6 +218,52 @@ export const ExpenseItem = ({ expense, handleChange, index }) => {
                 }
               />
             </motion.div>
+          )}
+        </div>
+      </div>
+
+      <div className=" flex-1  flex items-center justify-center">
+        {edit ? (
+          <input
+            className="outline outline-white/30 px-2 py-1 w-12"
+            name="amount"
+            type="number"
+            value={editedExpense.amount || expense?.amount}
+            onChange={(e) =>
+              setEditedExpense({ ...editedExpense, amount: e.target.value })
+            }
+          />
+        ) : (
+          editedExpense.amount || expense?.amount || <SkeletonLoaderLinear />
+        )}
+      </div>
+      {editedExpense.created || expense?.created ? (
+        <motion.div className="flex-1 flex">
+          {/* Action buttons */}
+          {!edit && (
+            // edit
+            <div className="flex items-center flex-1 justify-center">
+              <IconButton
+                onClick={() => setEdit(true)}
+                buttonContent={
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="#fff"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                    />
+                  </svg>
+                }
+                iconColor={"white"}
+              />
+            </div>
           )}
         </motion.div>
       ) : (
