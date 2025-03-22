@@ -5,15 +5,10 @@ import ExpenseList from "../components/ExpenseList";
 import ExpenseChart from "../components/ExpenseChart";
 import Pagination from "../components/Pagination";
 import IconButton from "../components/IconButton";
-import { primaryCategories, secondaryCategories } from "../lib/utils";
+import { formatDate, primaryCategories, secondaryCategories } from "../lib/utils";
 
 function Expenses() {
-  const formatDate = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
+
 
   const [dropdownValue, setDropdownValue] = useState("Current Week");
   const [data, setData] = useState(null);

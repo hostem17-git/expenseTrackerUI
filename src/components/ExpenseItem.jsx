@@ -2,10 +2,19 @@ import { useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import IconButton from "./IconButton";
 import SkeletonLoaderLinear from "./SkeletonLoader";
+import Dropdown from "./DropDown";
+import { formatDate, primaryCategories, secondaryCategories } from "../lib/utils";
 
 export const ExpenseItem = ({ expense, handleChange, index }) => {
   const [edit, setEdit] = useState(false);
-
+  const [editedExpense, setEditedExpense] = useState({
+    expense: null,
+    amount: null,
+    primarycategory: null,
+    secondarycategory: null,
+    created: null,
+    id: expense?.id,
+  });
   const getDateFromTimestamp = useCallback((timestamp) => {
     const date = new Date(timestamp);
     return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
@@ -34,14 +43,64 @@ export const ExpenseItem = ({ expense, handleChange, index }) => {
     >
       {/* Expense Info */}
       <div className="flex-6 flex flex-col justify-around px-2 transition">
-        <p>{expense?.expense || <SkeletonLoaderLinear />}</p>
+        {edit ? (
+          <input
+            className="outline outline-white/30 px-2 py-1"
+            name="expense"
+            type="text"
+            value={editedExpense.expense || expense?.expense}
+            onChange={(e)=>setEditedExpense({...editedExpense,'expense':e.target.value})}
+          />
+        ) : (
+          <p>
+            {editedExpense.expense || expense?.expense || (
+              <SkeletonLoaderLinear />
+            )}
+          </p>
+        )}
+
         <div className="flex w-full justify-between">
-          <p>{expense?.primarycategory || <SkeletonLoaderLinear />}</p>
-          <p>{expense?.secondarycategory || <SkeletonLoaderLinear />}</p>
+          {edit ? (
+            <Dropdown
+              options={primaryCategories}
+              defaultOption={
+                editedExpense.primarycategory || expense?.primarycategory
+              }
+              onSelect={(option) => {
+                setEditedExpense({ ...editedExpense, primarycategory: option });
+              }}
+            />
+          ) : (
+            <p>
+              {editedExpense.primarycategory || expense?.primarycategory || (
+                <SkeletonLoaderLinear />
+              )}
+            </p>
+          )}
+
+          {edit ? (
+            <Dropdown
+              options={secondaryCategories}
+              defaultOption={
+                editedExpense.secondarycategory || expense?.secondarycategory
+              }
+              onSelect={(option) => {
+                setEditedExpense({
+                  ...editedExpense,
+                  secondarycategory: option,
+                });
+              }}
+            />
+          ) : (
+            <p>
+              {editedExpense.secondarycategory ||
+                expense?.secondarycategory || <SkeletonLoaderLinear />}
+            </p>
+          )}
         </div>
 
         <div className=" flex items-center">
-          {expense?.created ? (
+          {editedExpense.created || expense?.created ? (
             <>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -57,7 +116,20 @@ export const ExpenseItem = ({ expense, handleChange, index }) => {
                   d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"
                 />
               </svg>
-              <p>{getDateFromTimestamp(expense?.created)}</p>
+              {edit ? (
+                <input
+                  type="date"
+                  value={formatDate(new Date(editedExpense.created || expense?.created))}
+                  onChange={(e) => {
+                    setEditedExpense({...editedExpense,created:e.target.value});
+                  }}
+                  className="bg-gray-100/5 p-2  cursor-pointer inset-shadow-m hover:bg-gray-100/20"
+                />
+              ) : (
+                <p>
+                  {getDateFromTimestamp(editedExpense.created || expense?.created)}
+                </p>
+              )}
             </>
           ) : (
             <SkeletonLoaderLinear />
@@ -66,9 +138,19 @@ export const ExpenseItem = ({ expense, handleChange, index }) => {
       </div>
 
       <div className=" flex-1  flex items-center justify-center ">
-        {expense?.amount || <SkeletonLoaderLinear />}
+        {edit?
+                  <input
+                  className="outline outline-white/30 px-2 py-1"
+                  name="amouny"
+                  type="number"
+                  value={editedExpense.amount || expense?.amount}
+            onChange={(e)=>setEditedExpense({...editedExpense,amount:e.target.value})}
+
+                />
+        : 
+        editedExpense.amount || expense?.amount || <SkeletonLoaderLinear />}
       </div>
-      {expense?.created ? (
+      {editedExpense.created || expense?.created ? (
         <motion.div className="flex-1 flex">
           {/* Action buttons */}
           {!edit ? (
@@ -166,7 +248,6 @@ export const ExpenseItem = ({ expense, handleChange, index }) => {
         <div className="flex-1 flex items-center">
           <SkeletonLoaderLinear />
         </div>
-       
       )}
     </motion.div>
   );

@@ -2,17 +2,18 @@ import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const Dropdown = ({ options, onSelect, defaultOption,placeholder,value}) => {   
-  const [isOpen, setIsOpen] = useState(false); 
-  const [selected, setSelected] = useState(defaultOption);  
-  useEffect(()=>{
+const Dropdown = ({ options, onSelect, defaultOption, placeholder, value }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selected, setSelected] = useState(defaultOption);
+  useEffect(() => {
+    if(value)
     setSelected(value);
-  },[value])
+  }, [value]);
 
-  const handleSelect = (option) => {  
+  const handleSelect = (option) => {
     setSelected(option);
-    onSelect(option); 
-    setIsOpen(false); 
+    onSelect(option);
+    setIsOpen(false);
   };
 
   return (
@@ -23,8 +24,11 @@ const Dropdown = ({ options, onSelect, defaultOption,placeholder,value}) => {
           bg-white/10 backdrop-blur-lg rounded-lg shadow-lg border border-white/20 
           hover:bg-white/20 transition break-keep"
       >
-        {selected || placeholder} 
-        <ChevronDown size={20} className={`transition-transform ${isOpen ? "rotate-180" : ""}`} />
+        {selected || placeholder}
+        <ChevronDown
+          size={20}
+          className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
+        />
       </button>
 
       {/* Dropdown Menu */}
@@ -35,18 +39,18 @@ const Dropdown = ({ options, onSelect, defaultOption,placeholder,value}) => {
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
-          ><div className="w-full h-full bg-white/40  backdrop-blur-lg">
-            {options.map((option, index) => (
-              <li
-                key={index}
-                onClick={() => handleSelect(option)}
-                className="px-4 py-2 cursor-pointer text-white hover:bg-green-500/30 transition"
-              >
-                {option}
-              </li>
-            ))}
-          </div>
-
+          >
+            <div className="w-full h-full bg-white/40  backdrop-blur-lg">
+              {options.map((option, index) => (
+                <li
+                  key={index}
+                  onClick={() => handleSelect(option)}
+                  className="px-4 py-2 cursor-pointer text-white hover:bg-green-500/30 transition"
+                >
+                  {option}
+                </li>
+              ))}
+            </div>
           </motion.ul>
         )}
       </AnimatePresence>

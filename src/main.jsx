@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
@@ -13,6 +12,6 @@ createRoot(document.getElementById("root")).render(
 // TODO: Notifications
 // Todo: auto signout
 // Todo: no data
-// Edit expense
-// Add expense
-// OTP login
+// Todo: Edit expense
+// Todo: Add expense
+// Todo: OTP login
