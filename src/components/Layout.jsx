@@ -1,11 +1,25 @@
 import { Link, NavLink, Outlet, useNavigate } from "react-router";
 import axios from "axios";
 import apiRequest from "../lib/apiRequest";
+import useNotification from "../hooks/useNotifications";
+import { animate } from "framer-motion";
 
 export default function Layout() {
   const navigate = useNavigate();
+
+  const { NotificationComponent, triggerNotification } =
+  useNotification("bottom-center");
+
   const handleLogout = async () => {
+
     try {
+
+      triggerNotification({
+        type:"success",
+        duration:3000,
+        animation:"slideIn"
+      })
+      return;
       const response = await apiRequest.get("/auth/signout", {
         withCredentials: true,
       });
@@ -19,7 +33,7 @@ export default function Layout() {
   };
 
   return (
-    <div className="flex flex-col min-h-svh bg-[url(/homeBGdark.png)] bg-black " >
+    <div className=" relative flex flex-col min-h-svh bg-[url(/homeBGdark.png)] bg-black ">
       <div className="flex justify-between text-white bg-white/20 border border-white/20 shadow-2xl backdrop-blur-xs px-2 fixed top-0 left-0 right-0 z-10">
         {/* Header */}
         <nav className="flex ">
@@ -38,7 +52,6 @@ export default function Layout() {
         <div className="flex ">
           {/* //TODO: handle active path */}
           <ul className="sm:flex items-center hidden">
-
             <li className=" flex items-center mx-1 cursor-pointer">
               <NavLink className="flex" to="/expenses">
                 <svg
@@ -106,6 +119,7 @@ export default function Layout() {
         <Outlet />
       </div>
 
+      {NotificationComponent}
       {/* Footer */}
       <>
         <div className=" text-white bg-white/20 border border-white/20 shadow-2xl backdrop-blur-xs py-1 flex sm:hidden">
