@@ -5,7 +5,7 @@ function Toast({
   type = "info",
   message,
   onClose,
-  duration = 5000,
+  duration = 3000,
   animation = "fadeIn",
 }) {
 

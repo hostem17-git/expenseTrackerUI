@@ -1,34 +1,30 @@
 import { Link, NavLink, Outlet, useNavigate } from "react-router";
 import axios from "axios";
 import apiRequest from "../lib/apiRequest";
-import useNotification from "../hooks/useNotifications";
-import { animate } from "framer-motion";
+import ToastManager from "./ToastManager";
+import { useNotifier } from "../hooks/useNotifier";
 
 export default function Layout() {
   const navigate = useNavigate();
-
-  const { NotificationComponent, triggerNotification } =
-  useNotification("bottom-center");
+  const notify = useNotifier();
 
   const handleLogout = async () => {
-
     try {
-
-      triggerNotification({
-        type:"success",
-        duration:3000,
-        animation:"slideIn"
-      })
-      return;
       const response = await apiRequest.get("/auth/signout", {
         withCredentials: true,
       });
 
       navigate("/ ");
       // useSendNotification("logged out");
+
       console.log("logout clicked");
     } catch (error) {
       // useCustomErrorHandler(error);
+      notify({
+        type: "error",
+        message: "Unable to logout",
+        animation: "SlideIn",
+      });
     }
   };
 
@@ -119,7 +115,8 @@ export default function Layout() {
         <Outlet />
       </div>
 
-      {NotificationComponent}
+      <ToastManager position="bottom-right" />
+
       {/* Footer */}
       <>
         <div className=" text-white bg-white/20 border border-white/20 shadow-2xl backdrop-blur-xs py-1 flex sm:hidden">
