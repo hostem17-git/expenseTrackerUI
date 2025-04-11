@@ -5,11 +5,13 @@ import ExpenseList from "../components/ExpenseList";
 import ExpenseChart from "../components/ExpenseChart";
 import Pagination from "../components/Pagination";
 import IconButton from "../components/IconButton";
-import { formatDate, primaryCategories, secondaryCategories } from "../lib/utils";
+import {
+  formatDate,
+  primaryCategories,
+  secondaryCategories,
+} from "../lib/utils";
 
 function Expenses() {
-
-
   const [dropdownValue, setDropdownValue] = useState("Current Week");
   const [data, setData] = useState(null);
   const [summaryData, setSummaryData] = useState(null);
@@ -20,6 +22,7 @@ function Expenses() {
   const [secondaryCategory, setSecondaryCategory] = useState(null);
   const [totalPages, setTotalPages] = useState(100);
   const [dataloading, setDataLoading] = useState(false);
+  const [refetch,setRefetch] = useState(false);
 
   const dropDownOptions = [
     "Custom",
@@ -54,11 +57,8 @@ function Expenses() {
             secondarycategory,
           },
         });
-        console.log("Fetch Expenses");
         setData(result?.data?.data?.payload.expenses);
-
-        console.log("--------------------", result?.data?.data?.rowCount);
-        setTotalPages(Math.floor(result?.data?.data?.rowCount / rowsPerPage));
+        setTotalPages(Math.ceil(result?.data?.data?.rowCount / rowsPerPage));
       } catch (error) {
         console.error(error);
       }
@@ -138,17 +138,6 @@ function Expenses() {
   }, [dropdownValue]);
 
   useEffect(() => {
-    console.log("--------------------------");
-
-    console.log(
-      startDate,
-      endDate,
-      primaryCategory,
-      secondaryCategory,
-      rowsPerPage,
-      currentPage
-    );
-
     const getData = async () => {
       setDataLoading(true);
       await fetchExpenses(
@@ -172,6 +161,7 @@ function Expenses() {
     secondaryCategory,
     rowsPerPage,
     currentPage,
+    refetch
   ]);
 
   useEffect(() => {
@@ -259,7 +249,7 @@ function Expenses() {
             />
           </div>
 
-          <ExpenseList expenses={data} onSave={() => console.log("HI")} />
+          <ExpenseList expenses={data} refetch={setRefetch} />
 
           <Pagination
             totalPages={totalPages}

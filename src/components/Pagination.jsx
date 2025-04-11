@@ -23,7 +23,6 @@ const Pagination = ({
       pages.push(i);
     }
     if (endPage < totalPages - 1) pages.push("...");
-    console.log(pages);
     return [1, ...pages, totalPages];
   };
 

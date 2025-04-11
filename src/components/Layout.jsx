@@ -10,16 +10,12 @@ export default function Layout() {
 
   const handleLogout = async () => {
     try {
-      const response = await apiRequest.get("/auth/signout", {
+      const response = await apiRequest.post("/auth/signout", {
         withCredentials: true,
       });
 
       navigate("/ ");
-      // useSendNotification("logged out");
-
-      console.log("logout clicked");
     } catch (error) {
-      // useCustomErrorHandler(error);
       notify({
         type: "error",
         message: "Unable to logout",

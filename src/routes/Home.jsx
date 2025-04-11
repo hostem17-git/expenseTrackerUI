@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { NavLink } from "react-router";
 import Auth from "./Auth";
 import ButtonGreenGradient from "../components/ButtonGreenGradient";
+import ToastManager from "../components/ToastManager";
 
 function Home() {
   const [showAuth, setShowAuth] = useState(false);
@@ -32,6 +33,9 @@ function Home() {
         {/* Decorative Line */}
         <div className="w-16 h-1 bg-[#25D366] rounded-full mt-4"></div>
       </div>
+
+      <ToastManager position="bottom-right" />
+
 
       {/* CTA Button */}
       <div className="mt-8">

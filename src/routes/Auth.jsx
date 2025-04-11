@@ -1,19 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import apiRequest from "../lib/apiRequest";
 import { useNavigate } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import ButtonGreenGradient from "../components/ButtonGreenGradient";
 import { em } from "framer-motion/client";
+import { useNotifier } from "../hooks/useNotifier";
 
 function Auth(props) {
   const [showSignIn, setShowSignIn] = useState(true);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [number,setNumber] = useState();
+  const [number, setNumber] = useState();
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  const notify = useNotifier();
 
   const hideAuth = () => {
     props.setShowAuth(false);
@@ -21,44 +25,84 @@ function Auth(props) {
 
   const signIn = async () => {
     try {
+      setLoading(true);
       const result = await apiRequest.post("/auth/signin", {
         email,
         password,
       });
 
-      console.log(result);
 
-      if (result.status == "200") {
+      setTimeout(() => {
+        notify({
+          tyoe: "warning",
+          message: "Session expiring soon",
+        });
+      }, (result?.data?.payload.life - 10) * 1000);
+
+      setTimeout(() => {
+        navigate("/")
+      }, (result?.data?.payload.life) * 1000);
+
+      
+      if (result.status == 200) {
         navigate("/expenses");
-        // UseNotification
+        UseNotification;
       }
     } catch (error) {
-      alert(error);
-      console.log(error);
+
+      if (error.status >= 500) {
+        notify({
+          type: "error",
+          message: "Server error : Please try again later",
+        });
+      } else if (error.status >= 400) {
+        notify({
+          type: "error",
+          message: "Unable to sign in, please check your inputs and try again",
+        });
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   const signUp = async () => {
-    const result = await apiRequest.post("/auth/signup", {
-      username,
-      password,
-      email,
-    });
+    try {
+      setLoading(true);
+      const result = await apiRequest.post("/auth/signup", {
+        username,
+        password,
+        email,
+      });
 
-    if (result.status == "201") {
-      setShowSignIn(true);
-
-      // UseNotification
+      if (result.status == "201") {
+        setShowSignIn(true);
+        notify({
+          type: "success",
+          message: "Account created successfully, you can sign in now.",
+        });
+      }
+    } catch (error) {
+      if (error.status >= 500) {
+        notify({
+          type: "error",
+          message: "Server error : Please try again later",
+        });
+      } else if (error.status >= 400) {
+        notify({
+          type: "error",
+          message: "Unable to sign in, please check your inputs and try again",
+        });
+      }
+    } finally {
+      setLoading(false);
     }
-
-    console.log(result);
   };
 
   const resetForm = () => {
     setEmail("");
     setPassword("");
     setUsername("");
-    console.log("rrrrrrrrrrr");
   };
 
   return (
@@ -160,7 +204,7 @@ function Auth(props) {
                   className="w-full p-3 shadow-md rounded-md focus:ring-2 focus:ring-green-500 outline-none"
                   onChange={(e) => setEmail(e.target.value)}
                 />
-                
+
                 <input
                   name="number"
                   type="tel"
@@ -187,14 +231,16 @@ function Auth(props) {
         {/* Submit Button */}
         <div className="flex justify-center mt-4">
           <motion.div
-            onClick={showSignIn ? signIn : signUp}
             className="w-full"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             <ButtonGreenGradient
               onClick={showSignIn ? signIn : signUp}
-              buttonText={showSignIn ? "Sign In" : "Sign Up"}
+              buttonText={
+                loading ? "Please waixt..." : showSignIn ? "Sign In" : "Sign Up"
+              }
+              disabled={loading}
             />
           </motion.div>
         </div>

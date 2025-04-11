@@ -9,22 +9,64 @@ import {
   secondaryCategories,
 } from "../lib/utils";
 import apiRequest from "../lib/apiRequest";
+import { useNotifier } from "../hooks/useNotifier";
 
-export const ExpenseItem = ({ expense, handleChange, index }) => {
+export const ExpenseItem = ({ expense, handleChange, index ,refetch}) => {
   const [edit, setEdit] = useState(false);
-  const [editedExpense, setEditedExpense] = useState({...expense,id:expense?.id});
+  const [editedExpense, setEditedExpense] = useState({
+    ...expense,
+    id: expense?.id,
+  });
   const getDateFromTimestamp = useCallback((timestamp) => {
     const date = new Date(timestamp);
     return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
   });
 
+  const notify = useNotifier();
+
   const updateExpense = useCallback(async () => {
     try {
-      const result = await apiRequest.put(`/expense/${expense?.id}`,editedExpense);
+      const result = await apiRequest.put(
+        `/expense/${expense?.id}`,
+        editedExpense
+      );
       setEdit(false);
-      console.log(result)
-    } catch(error) {
-      console.log(error);S
+      notify({
+        type: "success",
+        message: "Expense updated",
+      });
+    } catch (error) {
+      console.error(error);
+      notify({
+        type: "error",
+        message: "Unable to update expense",
+      });
+    }
+  });
+
+  const deleteExpense = useCallback(async () => {
+    try {
+      const confirmed = window.confirm(
+        "Are you sure you want to delete this expense item?"
+      );
+
+      if (!confirmed) {
+        return;
+      }
+      const result = await apiRequest.delete(`/expense/${expense?.id}`);
+      notify({
+        type: "success",
+        message: "Expense deleted",
+      });
+      setEdit(false);
+      console.log(refetch);
+      refetch((pre)=>!pre);
+    } catch (error) {
+      console.error(error);
+      notify({
+        type: "error",
+        message: "Unable to update expense",
+      });
     }
   });
 
@@ -199,7 +241,7 @@ export const ExpenseItem = ({ expense, handleChange, index }) => {
 
               {/* Delete */}
               <IconButton
-                onClick={() => setEdit(false)}
+                onClick={deleteExpense}
                 buttonContent={
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -234,7 +276,7 @@ export const ExpenseItem = ({ expense, handleChange, index }) => {
             }
           />
         ) : (
-          editedExpense.amount || expense?.amount || <SkeletonLoaderLinear />
+          editedExpense.amount || (expense?.amount)?.toString() || <SkeletonLoaderLinear />
         )}
       </div>
       {editedExpense.created || expense?.created ? (
