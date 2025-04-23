@@ -238,7 +238,7 @@ function Auth(props) {
             <ButtonGreenGradient
               onClick={showSignIn ? signIn : signUp}
               buttonText={
-                loading ? "Please waixt..." : showSignIn ? "Sign In" : "Sign Up"
+                loading ? "Please wait..." : showSignIn ? "Sign In" : "Sign Up"
               }
               disabled={loading}
             />

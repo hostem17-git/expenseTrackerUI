@@ -13,9 +13,6 @@ createRoot(document.getElementById("root")).render(
     </BrowserRouter>
     </Provider>
 );
-// TODO: Notifications
-// Todo: auto signout
 // Todo: no data
-// Todo: Edit expense done, update date pending
 // Todo: Add expense
 // Todo: OTP login
