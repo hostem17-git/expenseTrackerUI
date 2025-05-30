@@ -54,7 +54,6 @@ const ExpenseChart = ({ dataloading, data, onSliceClick, type }) => {
             symbolShape: "circle",
             itemTextColor: "#555",
             onClick: (legend) => onSliceClick(legend.label),
-            itemTextColor: "white",
           },
         ]}
       />
