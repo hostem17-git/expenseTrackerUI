@@ -3,52 +3,55 @@ import apiRequest from "../lib/apiRequest";
 import { useNavigate } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import ButtonGreenGradient from "../components/ButtonGreenGradient";
-import { em } from "framer-motion/client";
 import { useNotifier } from "../hooks/useNotifier";
+import OTPInput from "../components/OTP/OTP";
+import { i } from "framer-motion/client";
+import ResendOTP from "../components/OTP/ResendOTP";
 
 function Auth(props) {
-  const [showSignIn, setShowSignIn] = useState(true);
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [number, setNumber] = useState();
+  const [countryCode, setCountryCode] = useState("+91"); // Default India
+  const [number, setNumber] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
+  const [otpSent, setOTPSent] = useState(false);
+  const [otp, setOTP] = useState("");
 
+  const navigate = useNavigate();
   const notify = useNotifier();
 
   const hideAuth = () => {
     props.setShowAuth(false);
   };
 
-  const signIn = async () => {
+  const getOTP = async () => {
+    if (!number || number.length !== 10) {
+      setError("Please enter a valid number");
+      return;
+    }
+
     try {
       setLoading(true);
-      const result = await apiRequest.post("/auth/signin", {
-        email,
-        password,
+      setError(null);
+
+      // Combine country code and number
+      const fullNumber = countryCode + number;
+
+      const result = await apiRequest.post("/auth/sendotp", {
+        phoneNumber: fullNumber,
       });
 
+      notify({
+        type: "success",
+        message: "OTP sent successfully!",
+      });
 
-      setTimeout(() => {
-        notify({
-          tyoe: "warning",
-          message: "Session expiring soon",
-        });
-      }, (result?.data?.payload.life - 10) * 1000);
+      setOTPSent(true);
 
-      setTimeout(() => {
-        navigate("/")
-      }, (result?.data?.payload.life) * 1000);
-
-      
-      if (result.status == 200) {
-        navigate("/expenses");
-        UseNotification;
-      }
+      // TODO: show to OTP verification page/modal
+      // navigate("/verify-otp", { state: { number: fullNumber } });
     } catch (error) {
+      console.error("Error sending OTP:", error);
 
       if (error.status >= 500) {
         notify({
@@ -58,7 +61,7 @@ function Auth(props) {
       } else if (error.status >= 400) {
         notify({
           type: "error",
-          message: "Unable to sign in, please check your inputs and try again",
+          message: "Unable to send OTP, please check your number and try again",
         });
       }
     } finally {
@@ -66,32 +69,49 @@ function Auth(props) {
     }
   };
 
-  const signUp = async () => {
+  const verifyOTP = async () => {
+    if (!otp || otp.length !== 6) {
+      notify({
+        type: "error",
+        message: "Please enter a valid 6-digit OTP",
+      });
+      return;
+    }
+
     try {
       setLoading(true);
-      const result = await apiRequest.post("/auth/signup", {
-        username,
-        password,
-        email,
+      setError(null);
+
+      const result = await apiRequest.post("/auth/verifyotp", {
+        phoneNumber: countryCode + number,
+        otp,
       });
 
-      if (result.status == "201") {
-        setShowSignIn(true);
+      if (result.status === 200) {
         notify({
           type: "success",
-          message: "Account created successfully, you can sign in now.",
+          message: "OTP verified successfully!",
         });
+        navigate("/expenses");
       }
     } catch (error) {
+      console.error("Error sending OTP:", error);
+
       if (error.status >= 500) {
         notify({
           type: "error",
           message: "Server error : Please try again later",
         });
-      } else if (error.status >= 400) {
+      } else if (error.status > 400) {
         notify({
           type: "error",
-          message: "Unable to sign in, please check your inputs and try again",
+          message: "Unable to send OTP, please check your number and try again",
+        });
+      } else if (error.status === 400) {
+        notify({
+          type: "error",
+          message:
+            error?.response?.data?.message || "Invalid OTP, please try again",
         });
       }
     } finally {
@@ -100,9 +120,10 @@ function Auth(props) {
   };
 
   const resetForm = () => {
-    setEmail("");
-    setPassword("");
-    setUsername("");
+    setNumber("");
+    setCountryCode("+91");
+    setOTPSent(false);
+    setOTP("");
   };
 
   return (
@@ -115,119 +136,98 @@ function Auth(props) {
         className="bg-white shadow-xl rounded-lg p-6 w-full max-w-md min-h-[40vh] flex flex-col justify-between"
       >
         {/* Tab Switch */}
-        <div className="flex shadow-md relative bg-gray-100 rounded-md p-1">
+        <div className="flex shadow-[0_6px_4px_-2px_rgba(255,255,255,0.5)] relative bg-gray-100 rounded-md p-1">
           <motion.div
-            className="absolute top-0 bottom-0 left-0 w-1/2 bg-white rounded-md shadow-lg"
-            animate={{ left: showSignIn ? "0%" : "50%" }}
+            className="absolute top-0 bottom-0 left-0 w-full bg-white rounded-md shadow-lg"
             transition={{ duration: 0.3, ease: "easeInOut" }}
           />
-          <button
-            className={`flex-1 py-3 text-lg font-medium relative z-10 transition-colors ${
-              showSignIn
-                ? "text-green-600 font-semibold"
-                : "text-gray-500 hover:text-green-600"
-            }`}
-            onClick={() => {
-              setShowSignIn(true);
-              resetForm();
-            }}
+          <div
+            className={`flex-1 py-3 text-lg text-center font-medium relative z-10 transition-colors text-green-600 `}
           >
             Sign In
-          </button>
-          <button
-            className={`flex-1 py-3 text-lg font-medium relative z-10 transition-colors ${
-              !showSignIn
-                ? "text-green-600 font-semibold"
-                : "text-gray-500 hover:text-green-600"
-            }`}
-            onClick={() => {
-              setShowSignIn(false);
-              resetForm();
-            }}
-          >
-            Sign Up
-          </button>
+          </div>
         </div>
 
-        {/* Form with Animations */}
-        <div className="mt-4 relative">
-          <AnimatePresence mode="wait">
-            {showSignIn ? (
-              <motion.form
-                key="signin"
-                className="space-y-4"
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-              >
-                <input
-                  name="email"
-                  type="email"
-                  value={email}
-                  placeholder="Email"
-                  className="w-full p-3 shadow-md rounded-md focus:ring-2 focus:ring-green-500 outline-none"
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <input
-                  name="password"
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  className="w-full p-3 shadow-md rounded-md focus:ring-2 focus:ring-green-500 outline-none"
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                {error && <span className="text-red-500 text-sm">{error}</span>}
-              </motion.form>
-            ) : (
-              <motion.form
-                key="signup"
-                className="space-y-4"
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 50 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-              >
-                <input
-                  name="username"
-                  type="text"
-                  value={username}
-                  placeholder="Username"
-                  className="w-full p-3 shadow-md rounded-md focus:ring-2 focus:ring-green-500 outline-none"
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-                <input
-                  name="email"
-                  type="email"
-                  value={email}
-                  placeholder="Email"
-                  className="w-full p-3 shadow-md rounded-md focus:ring-2 focus:ring-green-500 outline-none"
-                  onChange={(e) => setEmail(e.target.value)}
-                />
+        <div className="shadow-md rounded-md my-2">
+          {/* Form with Animations */}
+          <div className="mt-4 relative">
+            <form
+              key="signin"
+              className=""
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              onSubmit={(e) => {
+                e.preventDefault();
+                getOTP();
+              }}
+            >
+              <div className="w-full p-3 rounded-md focus-within:ring-2 focus-within:ring-green-500 flex items-center gap-2 ">
+                {/* Country Code Dropdown */}
+                <select
+                  className="bg-gray-100 rounded-md border border-gray-300 px-2 py-1 text-sm text-gray-700 outline-none"
+                  value={countryCode}
+                  onChange={(e) => setCountryCode(e.target.value)}
+                >
+                  <option value="+91">🇮🇳 +91</option>
+                  <option value="+1">🇺🇸 +1</option>
+                  <option value="+44">🇬🇧 +44</option>
+                  <option value="+61">🇦🇺 +61</option>
+                  <option value="+81">🇯🇵 +81</option>
+                  {/* Add more country codes as needed */}
+                </select>
 
+                {/* Phone Number Input */}
                 <input
                   name="number"
                   type="tel"
                   value={number}
-                  placeholder="Whatsapp number"
-                  className="w-full p-3 shadow-md rounded-md focus:ring-2 focus:ring-green-500 outline-none"
-                  onChange={(e) => setNumber(e.target.value)}
+                  placeholder="Enter your phone number"
+                  required
+                  className="w-full outline-none text-lg"
+                  maxLength={10}
+                  onChange={(e) => {
+                    // Allow only digits, max length 10
+                    const val = e.target.value.replace(/\D/g, "");
+                    if (val.length <= 10) setNumber(val);
+                  }}
                 />
+              </div>
 
-                <input
-                  name="password"
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  className="w-full p-3 shadow-md rounded-md focus:ring-2 focus:ring-green-500 outline-none"
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                {error && <span className="text-red-500 text-sm">{error}</span>}
-              </motion.form>
+              {error && <span className="text-red-500 text-sm">{error}</span>}
+            </form>
+          </div>
+
+          <AnimatePresence mode="wait">
+            {otpSent && (
+              <motion.div
+                key="otp"
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="mt-4 py-2"
+              >
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    verifyOTP(); // This is the new function for OTP verification
+                  }}
+                >
+                  <div className="w-full p-3 rounded-md focus-within:ring-2 focus-within:ring-green-500 flex items-center gap-2">
+                    <OTPInput length={6} onChange={(val) => setOTP(val)} />
+                  </div>
+                  {error && (
+                    <span className="text-red-500 text-sm">{error}</span>
+                  )}
+                </form>
+
+                <ResendOTP number={countryCode + number} />
+              </motion.div>
             )}
           </AnimatePresence>
         </div>
-
         {/* Submit Button */}
         <div className="flex justify-center mt-4">
           <motion.div
@@ -236,9 +236,15 @@ function Auth(props) {
             whileTap={{ scale: 0.95 }}
           >
             <ButtonGreenGradient
-              onClick={showSignIn ? signIn : signUp}
+              onClick={otpSent ? verifyOTP : getOTP}
               buttonText={
-                loading ? "Please wait..." : showSignIn ? "Sign In" : "Sign Up"
+                loading
+                  ? otpSent
+                    ? "Verifying..."
+                    : "Sending..."
+                  : otpSent
+                  ? "Verify OTP"
+                  : "Get OTP"
               }
               disabled={loading}
             />
