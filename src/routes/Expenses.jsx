@@ -10,6 +10,7 @@ import {
   primaryCategories,
   secondaryCategories,
 } from "../lib/utils";
+import LoadingExpenseList from "../components/LoadingExpenseList";
 
 function Expenses() {
   const [dropdownValue, setDropdownValue] = useState("Current Week");
@@ -22,7 +23,7 @@ function Expenses() {
   const [secondaryCategory, setSecondaryCategory] = useState(null);
   const [totalPages, setTotalPages] = useState(100);
   const [dataloading, setDataLoading] = useState(false);
-  const [refetch,setRefetch] = useState(false);
+  const [refetch, setRefetch] = useState(false);
 
   const dropDownOptions = [
     "Custom",
@@ -161,7 +162,7 @@ function Expenses() {
     secondaryCategory,
     rowsPerPage,
     currentPage,
-    refetch
+    refetch,
   ]);
 
   useEffect(() => {
@@ -169,9 +170,9 @@ function Expenses() {
   }, [primaryCategory]);
 
   return (
-    <div className="w-full p-2 md:p-4 flex-1 flex ">
+    <div className="w-full p-2 md:p-4 flex-1 flex">
       <div className=" bg-black/35 backdrop-blur-xs w-full flex-1 flex flex-grow flex-wrap-reverse max-h-[85svh] overflow-y-scroll overflow-x-hidden thin-translucent-scrollbar">
-        <div className="left w-full md:w-1/2 h-full outline min-w-80 min-h-52 max-h-svh overflow-y-scroll overflow-x-hidden scroll thin-translucent-scrollbar relative">
+        <div className="left flex flex-col w-full md:w-1/2 h-full outline min-w-80 min-h-52 max-h-svh overflow-y-scroll overflow-x-hidden scroll thin-translucent-scrollbar relative">
           <div className="date_container outline flex flex-wrap items-center justify-evenly text-white">
             <Dropdown
               options={dropDownOptions}
@@ -179,6 +180,7 @@ function Expenses() {
               defaultOption={dropdownValue}
               value={dropdownValue}
             />
+
             <div className="flex flex-1 w-fit px-2 items-center ">
               <span className="font-semibold mr-2">Start</span>
               <input
@@ -249,7 +251,17 @@ function Expenses() {
             />
           </div>
 
-          <ExpenseList expenses={data} refetch={setRefetch} />
+          {dataloading ? (
+            <LoadingExpenseList />
+          ) : (
+            <ExpenseList
+              loading={dataloading}
+              expenses={data}
+              refetch={setRefetch}
+            />
+          )}
+
+          {/* <ExpenseList loading={dataloading} expenses={data} refetch={setRefetch} /> */}
 
           <Pagination
             totalPages={totalPages}
@@ -259,6 +271,7 @@ function Expenses() {
             onPageChange={setCurrentPage}
           />
         </div>
+
         <div className="right w-full md:w-1/2 h-full outline min-w-80 min-h-52 max-h-svh flex flex-col">
           <ExpenseChart
             data={summaryData}
@@ -268,7 +281,6 @@ function Expenses() {
           />
           <ExpenseChart
             data={secondaryData}
-            onSliceClick={setSecondaryCategory}
             type="secondary"
             dataloading={dataloading}
           />

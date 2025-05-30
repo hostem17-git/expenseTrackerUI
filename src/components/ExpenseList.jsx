@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { ExpenseItem } from "./ExpenseItem";
+import LoadingExpenseList from "./LoadingExpenseList";
 
 const ExpenseList = ({ expenses, refetch }) => {
   return (
-    <div>
+    
+    <div className="flex-1">
       {expenses ? (
         expenses?.map((expense, index) => (
           <ExpenseItem
@@ -14,7 +16,7 @@ const ExpenseList = ({ expenses, refetch }) => {
           />
         ))
       ) : (
-        <ExpenseItem />
+       <span className="text-white">No Data</span>  
       )}
     </div>
   );

@@ -14,7 +14,4 @@ createRoot(document.getElementById("root")).render(
     </Provider>
 );
 // Todo: no data
-// Todo: Add expense
-// Todo: OTP login
-// TODO: OTP Signup
 
