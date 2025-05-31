@@ -14,15 +14,22 @@ import LoadingExpenseList from "../components/LoadingExpenseList";
 
 function Expenses() {
   const [dropdownValue, setDropdownValue] = useState("Current Week");
+
   const [data, setData] = useState(null);
   const [summaryData, setSummaryData] = useState(null);
   const [secondaryData, setSecondaryData] = useState(null);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalPages, setTotalPages] = useState(100);
+
   const [primaryCategory, setPrimaryCategory] = useState(null);
   const [secondaryCategory, setSecondaryCategory] = useState(null);
-  const [totalPages, setTotalPages] = useState(100);
+
   const [dataloading, setDataLoading] = useState(false);
+  const [summaryLoading, setSummaryLoading] = useState(false);
+  const [secondaryLoading, setSecondaryLoading] = useState(false); 
+
   const [refetch, setRefetch] = useState(false);
 
   const dropDownOptions = [
@@ -32,7 +39,9 @@ function Expenses() {
     "Current Month",
     "Current Quarter",
   ];
+  
   const currentDate = new Date();
+
   const [endDate, setEndDate] = useState(formatDate(currentDate));
 
   const [startDate, setStartDate] = useState(() => {
@@ -47,6 +56,7 @@ function Expenses() {
   const fetchExpenses = useCallback(
     async (startDate, endDate, primarycategory, secondarycategory) => {
       setData(null);
+      setDataLoading(true);
       try {
         const result = await apiRequest.get("/expense", {
           params: {
@@ -62,6 +72,8 @@ function Expenses() {
         setTotalPages(Math.ceil(result?.data?.data?.rowCount / rowsPerPage));
       } catch (error) {
         console.error(error);
+      } finally {
+        setDataLoading(false);
       }
     }
   );
@@ -69,6 +81,7 @@ function Expenses() {
   const fetchPrimarySummary = useCallback(async (startDate, endDate) => {
     try {
       setSummaryData(null);
+      setSummaryLoading(true);
       const result = await apiRequest.get("/expense/summary", {
         params: {
           startDate,
@@ -78,6 +91,8 @@ function Expenses() {
       setSummaryData(result?.data?.data);
     } catch (error) {
       console.error(error);
+    }finally{
+      setSummaryLoading(false);
     }
   });
 
@@ -85,6 +100,7 @@ function Expenses() {
     async (startDate, endDate, primaryCategory) => {
       try {
         setSecondaryData(null);
+        setSecondaryLoading(true);
         const result = await apiRequest.get(
           `/expense/summary/${primaryCategory}`,
           {
@@ -98,6 +114,8 @@ function Expenses() {
         setSecondaryData(result?.data?.data);
       } catch (error) {
         console.error(error);
+      }finally{
+        setSecondaryLoading(false);
       }
     }
   );
@@ -138,32 +156,23 @@ function Expenses() {
     }
   }, [dropdownValue]);
 
-  useEffect(() => {
-    const getData = async () => {
-      setDataLoading(true);
-      await fetchExpenses(
-        startDate,
-        endDate,
-        primaryCategory,
-        secondaryCategory
-      );
-      await fetchPrimarySummary(startDate, endDate);
-      if (primaryCategory) {
-        await fetchSecondayCategoryData(startDate, endDate, primaryCategory);
-      }
-      setDataLoading(false);
-    };
+  // Separate effect for data fetching vs summary fetching
 
-    if (dropdownValue !== "Custom") getData();
-  }, [
-    startDate,
-    endDate,
-    primaryCategory,
-    secondaryCategory,
-    rowsPerPage,
-    currentPage,
-    refetch,
-  ]);
+  // TODO: Sit With claude
+
+  useEffect(() => {
+    fetchExpenses(startDate, endDate, primaryCategory, secondaryCategory);
+    if (primaryCategory) {
+      fetchSecondayCategoryData(startDate, endDate, primaryCategory);
+    }
+  }, [primaryCategory, secondaryCategory, rowsPerPage, currentPage, refetch]);
+
+  useEffect(() => {
+    if (dropdownValue !== "Custom") {
+      fetchExpenses(startDate, endDate, primaryCategory, secondaryCategory);
+      fetchPrimarySummary(startDate, endDate);
+    }
+  }, [startDate, endDate]);
 
   useEffect(() => {
     setSecondaryCategory(null);
@@ -171,7 +180,7 @@ function Expenses() {
 
   return (
     <div className="w-full p-2 md:p-4 flex-1 flex">
-      <div className=" bg-black/35 backdrop-blur-xs w-full flex-1 flex flex-grow flex-wrap-reverse max-h-[85svh] overflow-y-scroll overflow-x-hidden thin-translucent-scrollbar">
+      <div className=" bg-black/35 backdrop-blur-xs w-full flex-1 flex flex-grow flex-wrap max-h-[85svh] overflow-y-scroll overflow-x-hidden thin-translucent-scrollbar">
         <div className="left flex flex-col w-full md:w-1/2 h-full outline min-w-80 min-h-52 max-h-svh overflow-y-scroll overflow-x-hidden scroll thin-translucent-scrollbar relative">
           <div className="date_container outline flex flex-wrap items-center justify-evenly text-white">
             <Dropdown
@@ -261,8 +270,6 @@ function Expenses() {
             />
           )}
 
-          {/* <ExpenseList loading={dataloading} expenses={data} refetch={setRefetch} /> */}
-
           <Pagination
             totalPages={totalPages}
             currentPage={currentPage}
@@ -277,12 +284,13 @@ function Expenses() {
             data={summaryData}
             onSliceClick={setPrimaryCategory}
             type="primary"
-            dataloading={dataloading}
+            dataloading={summaryLoading}
           />
           <ExpenseChart
             data={secondaryData}
             type="secondary"
-            dataloading={dataloading}
+            onSliceClick={setSecondaryCategory}
+            dataloading={secondaryLoading}
           />
         </div>
       </div>
