@@ -15,51 +15,99 @@ function Home() {
     }
   }, []);
 
-  // Move the token check to useEffect to avoid calling it on every render
   useEffect(() => {
     checkTokenAndRedirect();
   }, [checkTokenAndRedirect]);
 
   return (
-    <div className="bg-[url(/homeBGdark.png)] bg-black w-full h-dvh flex flex-col items-center justify-center relative px-6">
+    <div className="bg-gradient-to-br from-gray-900 via-black to-gray-900 w-full h-screen flex flex-col relative overflow-scroll sm:overflow-hidden">
+      {/* Background overlay */}
+      <div className="absolute inset-0 bg-[url(/homeBGdark.png)] bg-cover bg-center opacity-30"></div>
+      
+      {/* Animated background elements */}
+      <div className="absolute top-8 left-8 w-24 h-24 bg-[#25D366] rounded-full opacity-10 blur-3xl animate-pulse"></div>
+      <div className="absolute bottom-16 right-16 w-32 h-32 bg-[#128C7E] rounded-full opacity-10 blur-3xl animate-pulse delay-1000"></div>
+      <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-white rounded-full opacity-5 blur-2xl animate-pulse delay-500"></div>
+
       {/* Authentication Modal */}
       {showAuth && <Auth setShowAuth={setShowAuth} />}
 
-      {/* Branding Section */}
-      <div className="relative flex flex-col items-center p-8 bg-white/20 border border-white/20 rounded-2xl shadow-2xl backdrop-blur-lg text-center w-full max-w-lg">
-        {/* WhatsPense Logo */}
-        <div>
-          <h1 className="text-5xl md:text-7xl font-extrabold text-[#128C7E] tracking-wide drop-shadow-xl">
+      {/* Main Content Container */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 py-4">
+        
+        {/* Logo Section - Compact */}
+        <div className="text-center mb-6">
+          <h1 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#25D366] via-[#128C7E] to-[#25D366] tracking-tight mb-2 drop-shadow-2xl">
             Whats
-            <span className="text-white drop-shadow-[0_0_8px_#128C7E]">
+            <span className="text-white drop-shadow-[0_0_20px_#25D366]">
               Pense
             </span>
           </h1>
+          <p className="text-sm text-gray-300 font-medium tracking-wider">
+            Expense Management Reimagined
+          </p>
         </div>
 
-        <p className="text-xs text-white/60">Manage expenses effortlessly</p>
-        {/* Tagline / Description */}
-        <p className="mt-8 text-lg md:text-xl text-white/90 font-medium leading-relaxed">
-          Your finances, simplified with a touch of WhatsApp magic.
-        </p>
+        {/* Hero Images Section - Compact Grid */}
+        <div className="flex-1 w-full max-w-5xl flex items-center justify-center mb-6">
+          <div className="grid md:grid-cols-2 gap-6 w-full max-w-4xl">
+            
+            {/* Messages Feature */}
+            <div className="group relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-[#25D366] to-[#128C7E] rounded-2xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
+              <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 hover:bg-white/15 transition-all duration-300 hover:scale-105 h-full">
+                <div className="flex flex-col items-center text-center h-full justify-center">
+                  <div className="mb-4 p-3 bg-[#25D366]/20 rounded-xl">
+                    <img 
+                      className="w-32 h-40 md:w-40 md:h-48 object-contain drop-shadow-xl" 
+                      src="/messages.png" 
+                      alt="Smart messaging interface" 
+                    />
+                  </div>
+                  <h3 className="text-lg md:text-xl font-bold text-white mb-2">Smart Messaging</h3>
+                  <p className="text-sm text-gray-300 leading-relaxed">
+                    Chat with your expenses like you chat with friends
+                  </p>
+                </div>
+              </div>
+            </div>
 
-        {/* Decorative Line */}
-        <div className="w-16 h-1 bg-[#25D366] rounded-full mt-4"></div>
+            {/* Charts Feature */}
+            <div className="group relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-[#128C7E] to-[#25D366] rounded-2xl blur-lg opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
+              <div className="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 hover:bg-white/15 transition-all duration-300 hover:scale-105 h-full">
+                <div className="flex flex-col items-center text-center h-full justify-center">
+                  <div className="mb-4 p-3 bg-[#128C7E]/20 rounded-xl">
+                    <img 
+                      className="w-32 h-40 md:w-40 md:h-48 object-contain drop-shadow-xl" 
+                      src="/charts.png" 
+                      alt="Visual analytics dashboard" 
+                    />
+                  </div>
+                  <h3 className="text-lg md:text-xl font-bold text-white mb-2">Visual Analytics</h3>
+                  <p className="text-sm text-gray-300 leading-relaxed">
+                    Beautiful insights that bring your data to life
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* CTA Section - Compact */}
+        <div className="text-center">
+          <div className="mb-2">
+            <ButtonGreenGradient
+              onClick={() => setShowAuth(!showAuth)}
+              buttonText={"Start Your Journey"}
+            />
+          </div>
+          <p className="text-xs text-gray-400">
+            Join thousands simplifying their finances
+          </p>
+        </div>
       </div>
 
-      {/* Feature Images */}
-      <div className="mt-8 flex gap-4 justify-center items-center">
-        <img className="w-24 h-32 object-contain" src="/messages.png" alt="messages" />
-        <img className="w-24 h-32 object-contain" src="/charts.png" alt="charts" />
-      </div>
-
-      {/* CTA Button */}
-      <div className="mt-8">
-        <ButtonGreenGradient
-          onClick={() => setShowAuth(!showAuth)}
-          buttonText={"Get Started"}
-        />
-      </div>
 
       <ToastManager position="bottom-right" />
     </div>
