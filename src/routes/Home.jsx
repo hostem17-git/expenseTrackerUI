@@ -6,6 +6,14 @@ import ToastManager from "../components/ToastManager";
 
 function Home() {
   const [showAuth, setShowAuth] = useState(false);
+  const navigate = useNavigate();
+  const checkTokenAndRedirect = useCallback(function () {
+    if (document.cookie.includes("token=")) {
+      navigate("/expenses");
+    }
+  }, []);
+
+  checkTokenAndRedirect();
 
   return (
     <div className="bg-[url(/homeBGdark.png)] bg-black w-full h-dvh flex flex-col items-center justify-center relative px-6">
@@ -35,7 +43,6 @@ function Home() {
       </div>
 
       <ToastManager position="bottom-right" />
-
 
       {/* CTA Button */}
       <div className="mt-8">
