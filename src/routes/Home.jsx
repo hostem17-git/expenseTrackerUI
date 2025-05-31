@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { NavLink } from "react-router";
 import Auth from "./Auth";
 import ButtonGreenGradient from "../components/ButtonGreenGradient";
@@ -6,10 +6,11 @@ import ToastManager from "../components/ToastManager";
 
 function Home() {
   const [showAuth, setShowAuth] = useState(false);
-  const navigate = useNavigate();
   const checkTokenAndRedirect = useCallback(function () {
+    console.log("Checking token in cookies...");
+ 
     if (document.cookie.includes("token=")) {
-      navigate("/expenses");
+      window.location.href="/expenses";
     }
   }, []);
 
