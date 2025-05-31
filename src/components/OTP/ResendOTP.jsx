@@ -24,12 +24,13 @@ function ResendOTP({ number, setMessage = () => {} }) {
     setResendCooldown(120);
     setMessage("OTP resent!");
     notify({
-        type:" success",
+        type:"success",
         message: "OTP resent to " + number,
     })
 
-    const otpRequest = await apiRequest.post("send-otp-therapists", { number });
-    console.log(otpRequest);
+    const result = await apiRequest.post("/auth/sendotp", {
+      phoneNumber: number,
+    });
   };
 
   const formatTime = (seconds) => {
@@ -41,7 +42,7 @@ function ResendOTP({ number, setMessage = () => {} }) {
   return (
     <div>
       {resendCooldown > 0 ? (
-        <p className="text-xs">
+        <p className="text-xs m-2 ">
           Resend OTP in <strong>{formatTime(resendCooldown)}</strong>
         </p>
       ) : (

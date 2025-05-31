@@ -92,6 +92,7 @@ function Auth(props) {
           type: "success",
           message: "OTP verified successfully!",
         });
+        debugger;
         navigate("/expenses");
       }
     } catch (error) {

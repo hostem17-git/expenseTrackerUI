@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { NavLink } from "react-router";
 import Auth from "./Auth";
 import ButtonGreenGradient from "../components/ButtonGreenGradient";
@@ -6,6 +6,7 @@ import ToastManager from "../components/ToastManager";
 
 function Home() {
   const [showAuth, setShowAuth] = useState(false);
+  
   const checkTokenAndRedirect = useCallback(function () {
     console.log("Checking token in cookies...");
  
@@ -14,7 +15,10 @@ function Home() {
     }
   }, []);
 
-  checkTokenAndRedirect();
+  // Move the token check to useEffect to avoid calling it on every render
+  useEffect(() => {
+    checkTokenAndRedirect();
+  }, [checkTokenAndRedirect]);
 
   return (
     <div className="bg-[url(/homeBGdark.png)] bg-black w-full h-dvh flex flex-col items-center justify-center relative px-6">
@@ -43,16 +47,23 @@ function Home() {
         <div className="w-16 h-1 bg-[#25D366] rounded-full mt-4"></div>
       </div>
 
-      <ToastManager position="bottom-right" />
+      {/* Feature Images */}
+      <div className="mt-8 flex gap-4 justify-center items-center">
+        <img className="w-24 h-32 object-contain" src="/messages.png" alt="messages" />
+        <img className="w-24 h-32 object-contain" src="/charts.png" alt="charts" />
+      </div>
 
       {/* CTA Button */}
       <div className="mt-8">
         <ButtonGreenGradient
           onClick={() => setShowAuth(!showAuth)}
-          buttonText={"Get Stated"}
+          buttonText={"Get Started"}
         />
       </div>
+
+      <ToastManager position="bottom-right" />
     </div>
   );
 }
+
 export default Home;
