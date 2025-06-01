@@ -3,7 +3,6 @@ import { useState } from "react";
 import "./App.css";
 import { Route, Routes } from "react-router";
 import Home from "./routes/Home";
-import User from "./routes/User";
 
 import Expenses from "./routes/Expenses";
 
@@ -21,9 +20,6 @@ function App() {
         <Route path="faq" element={<FAQ/>} />
         
         <Route element={<Layout />}>
-
-
-          <Route path="user" element={<User />} />
           <Route path="expenses" element={<Expenses />} />
         </Route>
       </Routes>
