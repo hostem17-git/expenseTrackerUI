@@ -48,8 +48,6 @@ function Auth(props) {
 
       setOTPSent(true);
 
-      // TODO: show to OTP verification page/modal
-      // navigate("/verify-otp", { state: { number: fullNumber } });
     } catch (error) {
       console.error("Error sending OTP:", error);
 
@@ -133,7 +131,7 @@ function Auth(props) {
       className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-50"
     >
       <div
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()} // Prevent click from closing the modal
         className="bg-white shadow-xl rounded-lg p-6 w-full max-w-md min-h-[40vh] flex flex-col justify-between"
       >
         {/* Tab Switch */}
@@ -250,6 +248,14 @@ function Auth(props) {
               disabled={loading}
             />
           </motion.div>
+        </div>
+
+        <div className="text-gray-400 text-sm">
+          ⚠️ Please make sure you are connected to WhatsApp sanbox before
+          proceeding.{" "}
+          <a href="/faq" className="text-blue-500 hover:underline">
+            <span>FAQ</span>
+          </a>
         </div>
       </div>
     </div>

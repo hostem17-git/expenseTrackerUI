@@ -158,7 +158,6 @@ function Expenses() {
 
   // Separate effect for data fetching vs summary fetching
 
-  // TODO: Sit With claude
 
   useEffect(() => {
     fetchExpenses(startDate, endDate, primaryCategory, secondaryCategory);

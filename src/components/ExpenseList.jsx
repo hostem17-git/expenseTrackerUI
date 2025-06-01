@@ -4,7 +4,6 @@ import LoadingExpenseList from "./LoadingExpenseList";
 
 const ExpenseList = ({ expenses, refetch }) => {
   return (
-    
     <div className="flex-1">
       {expenses ? (
         expenses?.map((expense, index) => (
@@ -16,7 +15,9 @@ const ExpenseList = ({ expenses, refetch }) => {
           />
         ))
       ) : (
-       <span className="text-white">No Data</span>  
+        <span className="text-white">
+          No data found, add expense or try a different date range
+        </span>
       )}
     </div>
   );

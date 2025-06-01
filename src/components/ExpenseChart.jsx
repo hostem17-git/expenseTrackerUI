@@ -14,7 +14,7 @@ const ExpenseChart = ({ dataloading, data, onSliceClick, type }) => {
   if (!data) {
     return (
       <div className="w-full flex-1 outline text-white text-center flex items-center justify-center">
-        {type === "primary" ? "No data" : "Select a primary category"}
+        {type === "primary" ? "No data found, add expense or try a different date range" : "Select a primary category"}
       </div>
     );
   }

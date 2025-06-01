@@ -8,6 +8,7 @@ import User from "./routes/User";
 import Expenses from "./routes/Expenses";
 
 import Layout from "./components/Layout";
+import FAQ from "./routes/FAQ";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -17,7 +18,11 @@ function App() {
       <Routes>
         <Route index element={<Home />} />
 
+        <Route path="faq" element={<FAQ/>} />
+        
         <Route element={<Layout />}>
+
+
           <Route path="user" element={<User />} />
           <Route path="expenses" element={<Expenses />} />
         </Route>
