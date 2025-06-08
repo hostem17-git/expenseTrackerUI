@@ -58,7 +58,6 @@ export const useExpenseManager = () => {
 
   // Custom search handler
   const handleCustomSearch = useCallback(() => {
-    console.log("Custom search triggered");
     api.fetchExpenses(fetchParams);
     api.fetchPrimarySummary(dateRange.startDate, dateRange.endDate);
   }, [fetchParams, dateRange.startDate, dateRange.endDate]);

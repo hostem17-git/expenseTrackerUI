@@ -13,8 +13,8 @@ export default function Layout() {
       const response = await apiRequest.post("/auth/signout", {
         withCredentials: true,
       });
-
-      navigate("/ ");
+      localStorage.removeItem("access_token");
+      navigate("/");
     } catch (error) {
       notify({
         type: "error",

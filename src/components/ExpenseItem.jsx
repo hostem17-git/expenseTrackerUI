@@ -59,7 +59,6 @@ export const ExpenseItem = ({ expense, handleChange, index ,refetch}) => {
         message: "Expense deleted",
       });
       setEdit(false);
-      console.log(refetch);
       refetch((pre)=>!pre);
     } catch (error) {
       console.error(error);

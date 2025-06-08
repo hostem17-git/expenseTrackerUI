@@ -8,9 +8,8 @@ function Home() {
   const [showAuth, setShowAuth] = useState(false);
   
   const checkTokenAndRedirect = useCallback(function () {
-    console.log("Checking token in cookies...");
  
-    if (document.cookie.includes("token=")) {
+    if (localStorage.getItem("access_token")) {
       window.location.href="/expenses";
     }
   }, []);

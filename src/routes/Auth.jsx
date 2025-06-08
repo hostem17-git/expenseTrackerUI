@@ -47,7 +47,6 @@ function Auth(props) {
       });
 
       setOTPSent(true);
-
     } catch (error) {
       console.error("Error sending OTP:", error);
 
@@ -90,7 +89,10 @@ function Auth(props) {
           type: "success",
           message: "OTP verified successfully!",
         });
-        debugger;
+
+        const token = result?.data?.payload?.access_token;
+
+        localStorage.setItem("access_token", token);
         navigate("/expenses");
       }
     } catch (error) {

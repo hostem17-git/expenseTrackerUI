@@ -6,7 +6,6 @@ export const useCategoryFilters = () => {
 
   // Reset secondary when primary changes
   useEffect(() => {
-    console.log("Primary category changed:", primaryCategory);
     setSecondaryCategory(null);
   }, [primaryCategory]);
 
